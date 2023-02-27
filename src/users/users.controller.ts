@@ -8,9 +8,14 @@ import {
   Query,
   Delete,
   NotFoundException,
+  Session,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/guards';
 import { Serialize } from 'src/interceptors';
+import { CurrentUser } from './decorators';
 import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
+import { User } from './entities';
 import { AuthService, UsersService } from './services';
 
 @Controller('users')
@@ -21,14 +26,32 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @Get('/whoami')
+  @UseGuards(AuthGuard)
+  whoAmI(@CurrentUser() user: User) {
+    return user;
+  }
+
   @Post('/register')
-  createUser(@Body() body: CreateUserDto) {
-    this.authService.register(body.email, body.password);
+  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+    const user = await this.authService.register(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/login')
-  login(@Body() { email, password }: CreateUserDto) {
-    return this.authService.login(email, password);
+  async login(
+    @Body() { email, password }: CreateUserDto,
+    @Session() session: any,
+  ) {
+    const user = await this.authService.login(email, password);
+    session.userId = user.id;
+    return user;
+  }
+
+  @Post('/logout')
+  logout(@Session() session: any) {
+    session.userId = null;
   }
 
   @Get('/:id')
