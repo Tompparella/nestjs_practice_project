@@ -7,14 +7,22 @@ import { InstitutionsModule, University, Guild } from './institutions';
 import { ContentModule } from './content/content.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieSession from 'cookie-session';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, University, Guild],
-      synchronize: true, // !! DO NOT LEAVE TRUE IN PRODUCTION FOR FUCKS SAKE !!
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'sqlite',
+        database: config.get<string>('DB_NAME'),
+        synchronize: process.env.NODE_ENV !== 'production',
+        entities: [User, University, Guild],
+      }),
     }),
     UsersModule,
     InstitutionsModule,
