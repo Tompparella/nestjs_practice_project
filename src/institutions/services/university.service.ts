@@ -10,7 +10,7 @@ export class UniversityService {
     @InjectRepository(University) private repo: Repository<University>,
   ) {}
 
-  create(universityDto: CreateUniversityDto) {
+  create(universityDto: CreateUniversityDto): Promise<University> {
     const university = this.repo.create(universityDto);
     return this.repo.save(university);
   }

@@ -8,7 +8,7 @@ import { Guild } from '../entities';
 export class GuildService {
   constructor(@InjectRepository(Guild) private repo: Repository<Guild>) {}
 
-  create(guildDto: CreateGuildDto) {
+  create(guildDto: CreateGuildDto): Promise<Guild> {
     const guild = this.repo.create(guildDto);
     return this.repo.save(guild);
   }

@@ -69,12 +69,14 @@ export class UsersController {
     return this.usersService.find(email);
   }
 
+  // TODO: Add Administration verification!
   @Delete('/:id')
   removeUser(@Param('id') id: string) {
     const idAsNumber = parseInt(id, 10);
     return this.usersService.remove(idAsNumber);
   }
 
+  // TODO: Add Administration/Moderator verification!
   @Patch('/:id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const idAsNumber = parseInt(id, 10);
