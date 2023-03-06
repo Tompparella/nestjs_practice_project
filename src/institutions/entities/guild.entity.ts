@@ -13,7 +13,7 @@ export class Guild {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @OneToMany(() => User, (user) => user.guild)
@@ -21,6 +21,7 @@ export class Guild {
 
   @ManyToOne(() => University, (university) => university.guilds, {
     nullable: false,
+    eager: true,
   })
   university: University;
 }

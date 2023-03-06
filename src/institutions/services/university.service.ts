@@ -10,14 +10,18 @@ export class UniversityService {
     @InjectRepository(University) private repo: Repository<University>,
   ) {}
 
-  create(universityDto: CreateUniversityDto): Promise<University> {
-    const university = this.repo.create(universityDto);
-    return this.repo.save(university);
+  async create(universityDto: CreateUniversityDto): Promise<University> {
+    try {
+      const university = this.repo.create(universityDto);
+      return await this.repo.save(university);
+    } catch (e) {
+      throw new Error(`Failed to create guild entry: ${e}`);
+    }
   }
   findOne(id: number): Promise<University> {
     if (!id) {
       return null;
     }
-    return this.repo.findOneBy({ id });
+    return this.repo.findOne({ where: { id } }); // {relations: ['guilds']}
   }
 }

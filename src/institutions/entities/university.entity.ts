@@ -7,10 +7,10 @@ export class University {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
-  @OneToMany(() => User, (user) => user.university)
+  @OneToMany(() => User, (user) => user.guild.university)
   users: User[];
 
   @OneToMany(() => Guild, (guild) => guild.university)

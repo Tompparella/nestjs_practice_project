@@ -13,7 +13,12 @@ const scrypt = promisify(_scrypt);
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async register(email: string, password: string, guildId: number) {
+  async register(
+    email: string,
+    password: string,
+    username: string,
+    guildId: number,
+  ) {
     const users = await this.usersService.find(email);
     if (users.length) {
       throw new BadRequestException('Email is already in use');
@@ -21,7 +26,7 @@ export class AuthService {
     const salt = randomBytes(16).toString('hex');
     const hash = <Buffer>await scrypt(password, salt, 32);
     const result = `${salt}.${hash.toString('hex')}`;
-    const user = this.usersService.create(email, result, guildId);
+    const user = this.usersService.create(email, result, username, guildId);
     return user;
   }
 

@@ -5,12 +5,14 @@ export class UserDto {
   id: number;
   @Expose()
   email: string;
+  @Expose()
+  username: string;
 
+  /*   @Expose()
   @Transform(({ obj }) => obj.university.id)
-  @Expose()
   universityId: number;
-
-  @Transform(({ obj }) => obj.guild.id)
+ */
   @Expose()
+  @Transform(({ obj }) => obj.guild.id)
   guildId: number;
 }

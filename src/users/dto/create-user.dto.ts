@@ -4,6 +4,8 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
   @IsString()
+  username: string;
+  @IsString()
   password: string;
   @IsString()
   guildId: string;

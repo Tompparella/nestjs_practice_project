@@ -1,4 +1,4 @@
-import { Guild, University } from 'src/institutions';
+import { Guild } from 'src/institutions';
 import {
   Entity,
   Column,
@@ -14,19 +14,21 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
+  username: string;
+
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @ManyToOne(() => University, (university) => university.users, {
-    nullable: false,
-  })
-  university: University;
+  @Column({ default: true }) //TODO: CHANGE THIS
+  admin: boolean;
 
   @ManyToOne(() => Guild, (guild) => guild.users, {
     nullable: false,
+    eager: true,
   })
   guild: Guild;
 

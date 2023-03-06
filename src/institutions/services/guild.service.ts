@@ -13,11 +13,15 @@ export class GuildService {
   ) {}
 
   async create(guildDto: CreateGuildDto): Promise<Guild> {
-    const uniIdAsNumber = parseInt(guildDto.universityId, 10);
-    const guild = this.repo.create({ name: guildDto.name });
-    const university = await this.universityService.findOne(uniIdAsNumber);
-    guild.university = university;
-    return this.repo.save(guild);
+    try {
+      const uniIdAsNumber = parseInt(guildDto.universityId, 10);
+      const guild = this.repo.create({ name: guildDto.name });
+      const university = await this.universityService.findOne(uniIdAsNumber);
+      guild.university = university;
+      return await this.repo.save(guild);
+    } catch (e) {
+      throw new Error(`Failed to create guild entry: ${e}`);
+    }
   }
   findOne(id: number): Promise<Guild> {
     if (!id) {
