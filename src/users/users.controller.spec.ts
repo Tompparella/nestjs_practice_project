@@ -82,6 +82,8 @@ describe('UsersController', () => {
       {
         email: testEmail,
         password: testPassword,
+        guildId: 1,
+        universityId: 1,
       },
       session,
     );

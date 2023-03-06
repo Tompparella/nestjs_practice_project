@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../guards';
-import { Serialize } from '../interceptors';
+import { Serialize } from '../interceptors/serialize';
 import { CurrentUser } from './decorators';
 import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
 import { User } from './entities';
@@ -34,7 +34,12 @@ export class UsersController {
 
   @Post('/register')
   async register(@Body() body: CreateUserDto, @Session() session: any) {
-    const user = await this.authService.register(body.email, body.password);
+    const guildIdAsNumber = parseInt(body.guildId, 10);
+    const user = await this.authService.register(
+      body.email,
+      body.password,
+      guildIdAsNumber,
+    );
     session.userId = user.id;
     return user;
   }

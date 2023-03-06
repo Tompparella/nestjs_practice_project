@@ -14,4 +14,10 @@ export class UniversityService {
     const university = this.repo.create(universityDto);
     return this.repo.save(university);
   }
+  findOne(id: number): Promise<University> {
+    if (!id) {
+      return null;
+    }
+    return this.repo.findOneBy({ id });
+  }
 }

@@ -1,3 +1,4 @@
+import { Guild, University } from 'src/institutions';
 import {
   Entity,
   Column,
@@ -5,6 +6,7 @@ import {
   AfterInsert,
   AfterUpdate,
   AfterRemove,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -17,6 +19,16 @@ export class User {
 
   @Column()
   password: string;
+
+  @ManyToOne(() => University, (university) => university.users, {
+    nullable: false,
+  })
+  university: University;
+
+  @ManyToOne(() => Guild, (guild) => guild.users, {
+    nullable: false,
+  })
+  guild: Guild;
 
   @AfterInsert()
   logInsert() {
