@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities';
 import { Repository } from 'typeorm';
@@ -37,7 +41,25 @@ export class UsersService {
     return this.repo.find({ where: { email } });
   }
 
-  async update(id: number, attrs: Partial<User>): Promise<User> {
+  findByUsername(username: string): Promise<User[]> {
+    return this.repo.find({ where: { username } });
+  }
+
+  async checkUniqueFields(email: string, username: string): Promise<void> {
+    const usersWithMatchingEmails = await this.find(email);
+    if (usersWithMatchingEmails.length > 0) {
+      throw new BadRequestException('Email is already in use');
+    }
+    const usersWithMatchingUsernames = await this.findByUsername(username);
+    if (usersWithMatchingUsernames.length > 0) {
+      throw new BadRequestException('Username is already in use');
+    }
+  }
+
+  async update(
+    id: number,
+    attrs: Omit<Partial<User>, 'password'>,
+  ): Promise<User> {
     const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');

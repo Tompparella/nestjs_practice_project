@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../../users/services';
 
+// Not used. Replaced with current-user.middleware
+
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
   constructor(private usersService: UsersService) {}

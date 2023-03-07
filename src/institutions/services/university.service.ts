@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { University } from '../entities';
 import { Repository } from 'typeorm';
@@ -10,13 +10,20 @@ export class UniversityService {
     @InjectRepository(University) private repo: Repository<University>,
   ) {}
 
-  async create(universityDto: CreateUniversityDto): Promise<University> {
-    try {
-      const university = this.repo.create(universityDto);
-      return await this.repo.save(university);
-    } catch (e) {
-      throw new Error(`Failed to create guild entry: ${e}`);
+  async checkUniqueFields(name: string): Promise<void> {
+    const matchingNames = await this.repo.find({ where: { name } });
+    if (matchingNames.length > 0) {
+      throw new BadRequestException('University with that name already exists');
     }
+  }
+
+  async create(universityDto: CreateUniversityDto): Promise<University> {
+    await this.checkUniqueFields(universityDto.name);
+    const university = this.repo.create(universityDto);
+    return await this.repo.save(university);
+  }
+  find(): Promise<University[]> {
+    return this.repo.find();
   }
   findOne(id: number): Promise<University> {
     if (!id) {

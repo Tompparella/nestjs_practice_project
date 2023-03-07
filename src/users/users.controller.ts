@@ -11,7 +11,7 @@ import {
   Session,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '../guards';
+import { AdminGuard, AuthGuard } from '../guards';
 import { Serialize } from '../interceptors';
 import { CurrentUser } from './decorators';
 import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
@@ -34,13 +34,7 @@ export class UsersController {
 
   @Post('/register')
   async register(@Body() body: CreateUserDto, @Session() session: any) {
-    const guildIdAsNumber = parseInt(body.guildId, 10);
-    const user = await this.authService.register(
-      body.email,
-      body.password,
-      body.username,
-      guildIdAsNumber,
-    );
+    const user = await this.authService.register(body);
     session.userId = user.id;
     return user;
   }
@@ -70,19 +64,21 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(AdminGuard)
   @Get()
   findAllUsers(@Query('email') email: string) {
     return this.usersService.find(email);
   }
 
-  // TODO: Add Administration verification!
+  @UseGuards(AdminGuard)
   @Delete('/:id')
   removeUser(@Param('id') id: string) {
     const idAsNumber = parseInt(id, 10);
     return this.usersService.remove(idAsNumber);
   }
 
-  // TODO: Add Administration/Moderator verification!
+  // TODO: Add Administration/Moderator/Own verification!
+  @UseGuards(AdminGuard)
   @Patch('/:id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const idAsNumber = parseInt(id, 10);
