@@ -20,7 +20,6 @@ enum Institution {
 }
 
 @Controller('institutions')
-@UseGuards(AuthGuard)
 export class InstitutionsController {
   constructor(
     private guildService: GuildService,
@@ -33,6 +32,7 @@ export class InstitutionsController {
   }
 
   @Get(`${Institution.University}/:id`)
+  @UseGuards(AuthGuard)
   findUniversity(@Param('id') id: string) {
     const idAsNumber = parseInt(id, 10);
     if (idAsNumber < 0) {
@@ -42,13 +42,14 @@ export class InstitutionsController {
   }
 
   @Post(Institution.University)
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard, AuthGuard)
   createUniversity(@Body() body: CreateUniversityDto) {
     return this.universityService.create(body);
   }
 
   @Get(`${Institution.Guild}/:id`)
   @Serialize(GuildDto)
+  @UseGuards(AuthGuard)
   findGuild(@Param('id') id: string) {
     const idAsNumber = parseInt(id, 10);
     if (idAsNumber < 0) {
@@ -65,7 +66,7 @@ export class InstitutionsController {
 
   @Post(Institution.Guild)
   @Serialize(GuildDto)
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard, AuthGuard)
   createGuild(@Body() body: CreateGuildDto) {
     return this.guildService.create(body);
   }

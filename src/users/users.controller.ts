@@ -14,7 +14,7 @@ import {
 import { AdminGuard, AuthGuard } from '../guards';
 import { Serialize } from '../interceptors';
 import { CurrentUser } from './decorators';
-import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
+import { CreateUserDto, LoginUserDto, UpdateUserDto, UserDto } from './dto';
 import { User } from './entities';
 import { AuthService, UsersService } from './services';
 
@@ -41,7 +41,7 @@ export class UsersController {
 
   @Post('/login')
   async login(
-    @Body() { email, password }: CreateUserDto,
+    @Body() { email, password }: LoginUserDto,
     @Session() session: any,
   ) {
     const user = await this.authService.login(email, password);
