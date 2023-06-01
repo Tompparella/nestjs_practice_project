@@ -8,6 +8,7 @@ import { ContentModule } from './content/content.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieSession from 'cookie-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UsersModule,
     InstitutionsModule,
     ContentModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [

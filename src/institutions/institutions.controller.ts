@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AdminGuard, AuthGuard } from 'src/guards';
@@ -25,6 +26,11 @@ export class InstitutionsController {
     private guildService: GuildService,
     private universityService: UniversityService,
   ) {}
+
+  @Get()
+  findInstitutionImage(@Query() query, @Res() res) {
+    // Jatka file upload videota tästä
+  }
 
   @Get(Institution.University)
   findUniversities() {
