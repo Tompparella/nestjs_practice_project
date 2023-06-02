@@ -79,8 +79,7 @@ export class FilesController {
     @UploadedFile(ImageValidator)
     file: Express.Multer.File,
   ) {
-    console.log(file);
-    return 1;
+    return this.uploadService.registerInstitutionImage(file.path);
   }
 
   @Post(`${File.Image}`)
@@ -89,7 +88,7 @@ export class FilesController {
     @UploadedFile(ImageValidator)
     file: Express.Multer.File,
   ) {
-    console.log(file);
+    return this.uploadService.registerContentImage(file.path);
   }
 
   @Post(`${File.Clip}`)
@@ -98,6 +97,6 @@ export class FilesController {
     @UploadedFile(ClipValidator)
     file: Express.Multer.File,
   ) {
-    console.log(file);
+    return this.uploadService.registerContentClip(file.path);
   }
 }
