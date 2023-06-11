@@ -8,6 +8,9 @@ export class GuildDto {
   name: string;
 
   @Expose()
+  imageUrl: string;
+
+  @Expose()
   @Transform(({ obj }) => obj.university.id)
   universityId: number;
 }

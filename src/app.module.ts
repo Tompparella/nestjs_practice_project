@@ -3,12 +3,11 @@ import { APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule, User } from './users';
+import { FilesModule, ContentClip, ContentImage } from './files';
 import { InstitutionsModule, University, Guild } from './institutions';
-import { ContentModule } from './content/content.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieSession from 'cookie-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -22,12 +21,11 @@ import { FilesModule } from './files/files.module';
         type: 'sqlite',
         database: config.get<string>('DB_NAME'),
         synchronize: process.env.NODE_ENV !== 'production',
-        entities: [User, University, Guild],
+        entities: [User, University, Guild, ContentClip, ContentImage],
       }),
     }),
     UsersModule,
     InstitutionsModule,
-    ContentModule,
     FilesModule,
   ],
   controllers: [AppController],

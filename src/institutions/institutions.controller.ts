@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AdminGuard, AuthGuard } from 'src/guards';
@@ -27,11 +26,6 @@ export class InstitutionsController {
     private universityService: UniversityService,
   ) {}
 
-  @Get()
-  findInstitutionImage(@Query() query, @Res() res) {
-    // Jatka file upload videota tästä
-  }
-
   @Get(Institution.University)
   findUniversities() {
     return this.universityService.find();
@@ -48,7 +42,7 @@ export class InstitutionsController {
   }
 
   @Post(Institution.University)
-  @UseGuards(AdminGuard, AuthGuard)
+  //@UseGuards(AdminGuard, AuthGuard)
   createUniversity(@Body() body: CreateUniversityDto) {
     return this.universityService.create(body);
   }
@@ -72,7 +66,7 @@ export class InstitutionsController {
 
   @Post(Institution.Guild)
   @Serialize(GuildDto)
-  @UseGuards(AdminGuard, AuthGuard)
+  //@UseGuards(AdminGuard, AuthGuard)
   createGuild(@Body() body: CreateGuildDto) {
     return this.guildService.create(body);
   }

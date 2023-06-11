@@ -10,7 +10,9 @@ export const ImageValidator = new ParseFilePipe({
     new FileTypeValidator({
       fileType: /.(jpg|jpeg|png)$/,
     }),
-    new MaxFileSizeValidator({ maxSize: 2097152 }),
+    new MaxFileSizeValidator({
+      maxSize: 2097152,
+    }),
   ],
   errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
 });

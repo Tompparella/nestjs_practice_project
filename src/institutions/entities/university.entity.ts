@@ -1,15 +1,10 @@
 import { User } from 'src/users';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, OneToMany } from 'typeorm';
 import { Guild } from './guild.entity';
+import { Institution } from './institution.entity';
 
 @Entity()
-export class University {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ unique: true })
-  name: string;
-
+export class University extends Institution {
   @OneToMany(() => User, (user) => user.guild.university)
   users: User[];
 
