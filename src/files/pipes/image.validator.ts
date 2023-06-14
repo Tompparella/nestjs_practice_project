@@ -1,18 +1,12 @@
-import {
-  FileTypeValidator,
-  HttpStatus,
-  MaxFileSizeValidator,
-  ParseFilePipe,
-} from '@nestjs/common';
+import { HttpStatus, ParseFilePipeBuilder } from '@nestjs/common';
 
-export const ImageValidator = new ParseFilePipe({
-  validators: [
-    new FileTypeValidator({
-      fileType: /.(jpg|jpeg|png)$/,
-    }),
-    new MaxFileSizeValidator({
-      maxSize: 2097152,
-    }),
-  ],
-  errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-});
+export const ImageValidator = new ParseFilePipeBuilder()
+  .addFileTypeValidator({
+    fileType: /(jpg|jpeg|png|gif|webp)$/,
+  })
+  .addMaxSizeValidator({
+    maxSize: 5242880,
+  })
+  .build({
+    errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+  });

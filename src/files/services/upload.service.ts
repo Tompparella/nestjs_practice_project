@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guild, University } from 'src/institutions';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ContentClip, ContentImage } from '../entities';
 import { ContentClipDto, ContentImageDto } from '../dto';
 

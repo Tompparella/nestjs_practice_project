@@ -4,7 +4,7 @@ import sharp from 'sharp';
 import { Path } from './paths';
 
 @Injectable()
-export class ContentSharpPipe
+export class ContentClipSharpPipe
   implements PipeTransform<Express.Multer.File, Promise<string>>
 {
   async transform(image: Express.Multer.File): Promise<string> {
@@ -14,7 +14,8 @@ export class ContentSharpPipe
     await sharp(image.buffer)
       .resize(800)
       .webp({ effort: 3 })
-      .toFile(join(Path.Image, filename));
+      .toFile(join(Path.Clip, filename));
+
     return filename;
   }
 }

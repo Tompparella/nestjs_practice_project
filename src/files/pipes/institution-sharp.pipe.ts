@@ -1,6 +1,7 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { join, parse } from 'path';
 import sharp from 'sharp';
+import { Path } from './paths';
 
 @Injectable()
 export class InstitutionSharpPipe
@@ -12,8 +13,7 @@ export class InstitutionSharpPipe
     await sharp(image.buffer)
       .resize(200)
       .webp({ effort: 3 })
-      .toFile(join('content/institution', filename));
-
+      .toFile(join(Path.Institution, filename));
     return filename;
   }
 }

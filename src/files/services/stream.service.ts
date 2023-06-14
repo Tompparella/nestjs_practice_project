@@ -2,10 +2,9 @@ import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ContentClip, ContentImage } from '../entities';
-import { createReadStream, constants, existsSync } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 import { join } from 'path';
 import { Response } from 'express';
-import { access } from 'fs/promises';
 
 @Injectable()
 export class StreamService {
@@ -16,14 +15,10 @@ export class StreamService {
     private clipRepo: Repository<ContentClip>,
   ) {}
 
-  async getInstitutionImage(
-    image: string,
-    response: Response,
-  ): Promise<StreamableFile> {
+  async getInstitutionImage(image: string): Promise<StreamableFile> {
     const path = join(process.cwd(), `content/institution/${image}`);
     if (existsSync(path)) {
       const stream = createReadStream(path);
-      //stream.on('end', () => file.close());
       //response.set({ 'Content-Type': 'image/jpeg' });
       return new StreamableFile(stream);
     } else {

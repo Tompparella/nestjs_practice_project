@@ -1,18 +1,12 @@
-import {
-  FileTypeValidator,
-  HttpStatus,
-  MaxFileSizeValidator,
-  ParseFilePipe,
-} from '@nestjs/common';
+import { HttpStatus, ParseFilePipeBuilder } from '@nestjs/common';
 
-export const ClipValidator = new ParseFilePipe({
-  validators: [
-    new FileTypeValidator({
-      fileType: /.(ogg|webm)$/, //TODO: Add filetypes when possible
-    }),
-    new MaxFileSizeValidator({
-      maxSize: 5242880,
-    }),
-  ],
-  errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-});
+export const ClipValidator = new ParseFilePipeBuilder()
+  .addFileTypeValidator({
+    fileType: '.(ogg|webm)', //TODO: Add filetypes when possible
+  })
+  .addMaxSizeValidator({
+    maxSize: 5242880,
+  })
+  .build({
+    errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+  });
