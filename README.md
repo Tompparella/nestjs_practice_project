@@ -72,12 +72,12 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 
-
 ## Globally scoped validation pipe
 
 ## Globally scoped cookie session middleware
 
 ### Environment file
+
 DB_NAME=<Build environment>
 COOKIE_KEY=<Secret cookie key>
 CLIENT_URL=<Client server url>
