@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -42,7 +43,7 @@ export class InstitutionsController {
   }
 
   @Post(Institution.University)
-  //@UseGuards(AdminGuard, AuthGuard)
+  //@UseGuards(AdminGuard, AuthGuard) //TODO: Remove guard-blocking comments!
   createUniversity(@Body() body: CreateUniversityDto) {
     return this.universityService.create(body);
   }
@@ -69,5 +70,19 @@ export class InstitutionsController {
   //@UseGuards(AdminGuard, AuthGuard)
   createGuild(@Body() body: CreateGuildDto) {
     return this.guildService.create(body);
+  }
+
+  @Delete(Institution.Guild)
+  //@UseGuards(AdminGuard, AuthGuard)
+  removeGuild() {
+    //TODO: Remove route
+    return;
+  }
+
+  @Delete(Institution.University)
+  //@UseGuards(AdminGuard, AuthGuard)
+  removeUniversity() {
+    //TODO: Remove route
+    return;
   }
 }
