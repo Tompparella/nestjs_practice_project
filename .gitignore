@@ -19,6 +19,7 @@ lerna-debug.log*
 
 # Databases
 *.sqlite
+development
 
 # Content
 /content
