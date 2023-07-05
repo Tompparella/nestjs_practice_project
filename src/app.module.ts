@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { UsersModule, User } from './users';
 import { FilesModule, ContentClip, ContentImage } from './files';
 import { InstitutionsModule, University, Guild } from './institutions';
+import { ProfilesModule } from './profiles';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieSession from 'cookie-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -27,6 +28,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UsersModule,
     InstitutionsModule,
     FilesModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,2 +1,2 @@
 export { FilesModule } from './files.module';
-export { ContentClip, ContentImage } from './entities';
+export { ContentClip, ContentImage, Content } from './entities';

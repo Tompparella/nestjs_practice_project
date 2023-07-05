@@ -1,3 +1,4 @@
+import { Content } from 'src/files';
 import { Guild } from 'src/institutions';
 import {
   Entity,
@@ -7,6 +8,7 @@ import {
   AfterUpdate,
   AfterRemove,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -31,6 +33,9 @@ export class User {
     eager: true,
   })
   guild: Guild;
+
+  @OneToMany(() => Content, (content) => content.creator)
+  content: Content[];
 
   @AfterInsert()
   logInsert() {
