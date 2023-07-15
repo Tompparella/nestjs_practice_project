@@ -3,4 +3,5 @@ export enum Path {
   Profile = 'content/profile',
   Image = 'content/image',
   Clip = 'content/clip',
+  Tag = 'content/tag',
 }

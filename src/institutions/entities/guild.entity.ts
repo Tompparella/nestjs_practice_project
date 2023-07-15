@@ -1,4 +1,5 @@
 import { User } from 'src/users';
+import { Content } from '../../content/entities';
 import { Entity, OneToMany, ManyToOne } from 'typeorm';
 import { University } from './university.entity';
 import { Institution } from './institution.entity';
@@ -13,4 +14,6 @@ export class Guild extends Institution {
     eager: true,
   })
   university: University;
+  @OneToMany(() => Content, (content) => content.guild)
+  content: Content[];
 }

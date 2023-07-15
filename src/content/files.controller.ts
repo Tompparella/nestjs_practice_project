@@ -19,16 +19,25 @@ import {
   ImageValidator,
   InstitutionSharpPipe,
   ProfileSharpPipe,
+  TagSharpPipe,
 } from './pipes';
-import { ContentClipDto, ContentImageDto, InstitutionImageDto } from './dto';
+import {
+  ContentClipDto,
+  ContentImageDto,
+  InstitutionImageDto,
+  TagImageDto,
+} from './dto';
 import { Response } from 'express';
 import { memoryStorage } from 'multer';
+import { CurrentUser } from 'src/users/decorators';
+import { User } from 'src/users';
 
 enum File {
   Institution = 'institution',
   Profile = 'profile',
   Image = 'image',
   Clip = 'clip',
+  Tag = 'tag',
 }
 
 const getImageOptions = (fileSizeMb: number): MulterOptions => ({
@@ -97,33 +106,66 @@ export class FilesController {
     }
   }
 
+  @Post(`${File.Tag}`)
+  @UseInterceptors(FileInterceptor('image', getImageOptions(5)))
+  uploadTagImage(
+    @UploadedFile(ImageValidator, TagSharpPipe)
+    file: string,
+    @Body() body: TagImageDto,
+  ) {
+    return this.uploadService.registerTagImage(file, body.id);
+  }
+
   @Post(`${File.Image}`)
   @UseInterceptors(FileInterceptor('image', getImageOptions(10)))
   uploadContentImage(
+    @CurrentUser()
+    user: User,
     @UploadedFile(ImageValidator, ContentSharpPipe)
     file: string,
     @Body() body: ContentImageDto,
   ) {
-    return this.uploadService.registerContentImage(file, body);
+    if (!user) {
+      // TODO: Error handling in case not logged in
+      return;
+    }
+    return this.uploadService.registerContentImage(file, body, user);
   }
 
+  // TODO: Differentiate uploading clip from image
   @Post(`${File.Clip}`)
   @UseInterceptors(FileInterceptor('clip', clipOptions))
   uploadContentClip(
+    @CurrentUser()
+    user: User,
     @UploadedFile(ClipValidator, ContentClipSharpPipe)
     file: string,
     @Body() body: ContentClipDto,
   ) {
-    return this.uploadService.registerContentClip(file, body);
+    if (!user) {
+      // TODO: Error handling in case not logged in
+      return;
+    }
+    return this.uploadService.registerContentClip(file, body, user);
   }
 
   @Post(`${File.Profile}/:id`)
   @UseInterceptors(FileInterceptor('image', getImageOptions(5)))
   uploadProfileImage(
+    @CurrentUser()
+    user: User,
     @UploadedFile(ImageValidator, ProfileSharpPipe)
     file: string,
     @Param('id') id: string,
   ) {
-    return this.uploadService.registerProfileImage(file, parseInt(id, 10));
+    if (!user) {
+      // TODO: Error handling in case not logged in
+      return;
+    }
+    return this.uploadService.registerProfileImage(
+      file,
+      parseInt(id, 10),
+      user,
+    );
   }
 }

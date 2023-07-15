@@ -1,22 +1,13 @@
 import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ContentClip, ContentImage } from '../entities';
 import { createReadStream, existsSync } from 'fs';
 import { join } from 'path';
 import { Response } from 'express';
+import { FilePath } from '../pipes';
 
 @Injectable()
 export class StreamService {
-  constructor(
-    @InjectRepository(ContentImage)
-    private imageRepo: Repository<ContentImage>,
-    @InjectRepository(ContentClip)
-    private clipRepo: Repository<ContentClip>,
-  ) {}
-
   async getInstitutionImage(image: string): Promise<StreamableFile> {
-    const path = join(process.cwd(), `content/institution/${image}`);
+    const path = join(process.cwd(), `${FilePath.Institution}/${image}`);
     if (existsSync(path)) {
       const stream = createReadStream(path);
       //response.set({ 'Content-Type': 'image/jpeg' });
@@ -27,8 +18,18 @@ export class StreamService {
       );
     }
   }
+  async getTagImage(image: string): Promise<StreamableFile> {
+    const path = join(process.cwd(), `${FilePath.Tag}/${image}`);
+    if (existsSync(path)) {
+      const stream = createReadStream(path);
+      //response.set({ 'Content-Type': 'image/jpeg' });
+      return new StreamableFile(stream);
+    } else {
+      throw new NotFoundException(`Tag image with filename ${image} not found`);
+    }
+  }
   getContentImage(image: string, response: Response): StreamableFile {
-    const path = join(process.cwd(), `content/image/${image}`);
+    const path = join(process.cwd(), `${FilePath.Image}/${image}`);
     if (existsSync(path)) {
       const file = createReadStream(path);
       //file.on('error', () => file.close());
@@ -41,7 +42,7 @@ export class StreamService {
     }
   }
   getContentClip(clip: string, response: Response): StreamableFile {
-    const path = join(process.cwd(), `content/clip/${clip}`);
+    const path = join(process.cwd(), `${FilePath.Clip}/${clip}`);
     if (existsSync(path)) {
       const file = createReadStream(path);
       //file.on('error', () => file.close());

@@ -1,5 +1,5 @@
 import { Tag } from './tag.entity';
-import { Institution } from './../../institutions/entities';
+import { Guild } from './../../institutions/entities';
 import {
   Entity,
   Column,
@@ -8,6 +8,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from '../../users/entities';
+import { AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
 
 @Entity()
 export class Content {
@@ -17,11 +18,17 @@ export class Content {
   @Column({ unique: true })
   url: string;
 
-  @Column()
+  @Column({ default: 0 })
   likes: number;
 
-  @Column()
+  @Column({ default: 0 })
   dislikes: number;
+
+  @Column()
+  title: string;
+
+  @Column()
+  type: 'image' | 'clip';
 
   @ManyToOne(() => User, (user) => user.content, {
     eager: true,
@@ -33,8 +40,21 @@ export class Content {
   })
   tags: Tag[];
 
-  @ManyToOne(() => Institution, (institution) => institution.content, {
+  @ManyToOne(() => Guild, (institution) => institution.content, {
     eager: true,
   })
-  institution: Institution;
+  guild: Guild;
+
+  @AfterInsert()
+  logInsert() {
+    console.log(`+ User ${this.creator.id} created content with id ${this.id}`);
+  }
+  @AfterUpdate()
+  logUpdate() {
+    console.log(`! User ${this.creator.id} updated content with id ${this.id}`);
+  }
+  @AfterRemove()
+  logRemove() {
+    console.log(`- User ${this.creator.id} removed content with id ${this.id}`);
+  }
 }

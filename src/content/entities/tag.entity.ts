@@ -12,7 +12,7 @@ export class Tag {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   imageUrl: string;
 
   @ManyToMany(() => Content, (content) => content.tags)

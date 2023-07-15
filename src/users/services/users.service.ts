@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities';
 import { Repository } from 'typeorm';
 import { GuildService } from 'src/institutions/services';
+import { Content } from 'src/content';
 
 @Injectable()
 export class UsersService {
@@ -74,5 +75,10 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     this.repo.remove(user);
+  }
+
+  async uploadContent(user: User, content: Content): Promise<void> {
+    console.log(JSON.stringify(user));
+    console.log(JSON.stringify(content));
   }
 }

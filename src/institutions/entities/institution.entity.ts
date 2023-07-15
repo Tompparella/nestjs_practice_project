@@ -1,5 +1,4 @@
-import { Content } from '../../content/entities';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Institution {
@@ -11,7 +10,4 @@ export class Institution {
 
   @Column({ nullable: true })
   imageUrl: string;
-
-  @OneToMany(() => Content, (content) => content.institution)
-  content: Content[];
 }
