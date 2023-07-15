@@ -1,5 +1,5 @@
-import { Content } from 'src/files';
-import { Guild } from 'src/institutions';
+import { Content } from '../../content/entities';
+import { Guild } from '../../institutions/entities';
 import {
   Entity,
   Column,

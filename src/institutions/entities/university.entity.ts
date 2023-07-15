@@ -1,4 +1,4 @@
-import { User } from 'src/users';
+import { User } from '../../users/entities';
 import { Entity, OneToMany } from 'typeorm';
 import { Guild } from './guild.entity';
 import { Institution } from './institution.entity';

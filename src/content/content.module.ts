@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { UploadService, StreamService } from './services';
 import { FilesController } from './files.controller';
+import { TagsController } from './tags.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContentClip, ContentImage } from './entities';
-import { User } from '../users';
-import { Guild, University } from '../institutions';
+import { User } from '../users/entities';
+import { Guild, University } from '../institutions/entities';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { Guild, University } from '../institutions';
     }),
   ],
   providers: [UploadService, StreamService],
-  controllers: [FilesController],
+  controllers: [FilesController, TagsController],
 })
-export class FilesModule {}
+export class ContentModule {}

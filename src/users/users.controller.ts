@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Session,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AdminGuard, AuthGuard } from '../guards';
 import { Serialize } from '../interceptors';
@@ -83,5 +84,11 @@ export class UsersController {
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const idAsNumber = parseInt(id, 10);
     return this.usersService.update(idAsNumber, body);
+  }
+
+  @Post('/upload')
+  @UseInterceptors()
+  uploadContent(@Body() content: object) {
+    //
   }
 }

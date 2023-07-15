@@ -1,5 +1,5 @@
-import { Tag } from 'src/profiles/entities/tag.entity';
-import { Institution } from './../../institutions/entities/institution.entity';
+import { Tag } from './tag.entity';
+import { Institution } from './../../institutions/entities';
 import {
   Entity,
   Column,
@@ -7,7 +7,7 @@ import {
   ManyToMany,
   ManyToOne,
 } from 'typeorm';
-import { User } from 'src/users';
+import { User } from '../../users/entities';
 
 @Entity()
 export class Content {

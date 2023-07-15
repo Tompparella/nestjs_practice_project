@@ -1,4 +1,4 @@
-import { Content } from '../../files';
+import { Content } from './content.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 
 @Entity()
@@ -11,6 +11,9 @@ export class Tag {
 
   @Column()
   description: string;
+
+  @Column()
+  imageUrl: string;
 
   @ManyToMany(() => Content, (content) => content.tags)
   content: Content[];

@@ -2,9 +2,12 @@ import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule, User } from './users';
-import { FilesModule, ContentClip, ContentImage } from './files';
-import { InstitutionsModule, University, Guild } from './institutions';
+import { UsersModule } from './users';
+import { ContentModule } from './content';
+import { InstitutionsModule } from './institutions';
+import { University, Guild, Institution } from './institutions/entities';
+import { Content, ContentClip, ContentImage, Tag } from './content/entities';
+import { User } from './users/entities';
 import { ProfilesModule } from './profiles';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieSession from 'cookie-session';
@@ -22,12 +25,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         type: 'sqlite',
         database: config.get<string>('DB_NAME'),
         synchronize: process.env.NODE_ENV !== 'production',
-        entities: [User, University, Guild, ContentClip, ContentImage],
+        entities: [
+          User,
+          University,
+          Guild,
+          ContentClip,
+          ContentImage,
+          Tag,
+          Content,
+          Institution,
+        ],
       }),
     }),
     UsersModule,
     InstitutionsModule,
-    FilesModule,
+    ContentModule,
     ProfilesModule,
   ],
   controllers: [AppController],

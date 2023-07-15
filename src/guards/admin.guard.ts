@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { User } from 'src/users';
+import { User } from '../users/entities';
 
 export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext) {

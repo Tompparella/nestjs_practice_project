@@ -1,4 +1,4 @@
-import { Content } from '../../files';
+import { Content } from '../../content/entities';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
