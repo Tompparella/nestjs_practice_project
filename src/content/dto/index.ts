@@ -1,6 +1,5 @@
-export { TagImageDto } from './create-tag.dto copy';
+export { UploadContentResponseDto } from './upload-content-response.dto';
+export { TagImageDto } from './tag-image.dto';
 export { CreateTagDto } from './create-tag.dto';
 export { InstitutionImageDto } from './institution-image.dto';
-export { ContentClipDto } from './content-clip.dto';
-export { ContentImageDto } from './content-image.dto';
-export { ProfileImageDto } from './profile-image.dto';
+export { ContentDto } from './content.dto';

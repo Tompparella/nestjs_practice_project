@@ -1,14 +1,17 @@
-import { Tag } from './tag.entity';
-import { Guild } from './../../institutions/entities';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   ManyToMany,
   ManyToOne,
+  JoinTable,
+  AfterInsert,
+  AfterUpdate,
+  AfterRemove,
 } from 'typeorm';
+import { Tag } from './tag.entity';
 import { User } from '../../users/entities';
-import { AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
+import { Guild } from '../../institutions/entities';
 
 @Entity()
 export class Content {
@@ -35,15 +38,16 @@ export class Content {
   })
   creator: User;
 
-  @ManyToMany(() => Tag, (tag) => tag.content, {
-    eager: true,
-  })
-  tags: Tag[];
-
-  @ManyToOne(() => Guild, (institution) => institution.content, {
+  @ManyToOne(() => Guild, (guild) => guild.content, {
     eager: true,
   })
   guild: Guild;
+
+  @ManyToMany(() => Tag, (tag) => tag.content, {
+    eager: true,
+  })
+  @JoinTable()
+  tags: Tag[];
 
   @AfterInsert()
   logInsert() {

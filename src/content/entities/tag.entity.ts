@@ -1,5 +1,13 @@
 import { Content } from './content.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  AfterInsert,
+  AfterUpdate,
+  AfterRemove,
+} from 'typeorm';
 
 @Entity()
 export class Tag {
@@ -17,4 +25,17 @@ export class Tag {
 
   @ManyToMany(() => Content, (content) => content.tags)
   content: Content[];
+
+  @AfterInsert()
+  logInsert() {
+    console.log(`+ Created tag with id ${this.id}`);
+  }
+  @AfterUpdate()
+  logUpdate() {
+    console.log(`! Updated tag with id ${this.id}`);
+  }
+  @AfterRemove()
+  logRemove() {
+    console.log(`- Removed tag with id ${this.id}`);
+  }
 }

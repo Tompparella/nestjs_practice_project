@@ -6,6 +6,11 @@ import { CreateTagDto } from './dto';
 export class TagsController {
   constructor(private readonly tagService: TagsService) {}
 
+  @Get()
+  async getTags() {
+    return this.tagService.getTags();
+  }
+
   @Get('/:id')
   async getTag(@Param('id') id: string) {
     return this.tagService.findTag(parseInt(id, 10));

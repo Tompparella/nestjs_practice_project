@@ -2,9 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guild, University } from '../../institutions/entities';
 import { Repository } from 'typeorm';
-import { ContentClip, ContentImage } from '../entities';
-import { ContentClipDto, ContentImageDto } from '../dto';
-import { UsersService } from '../../users/services';
+import { Content } from '../entities';
+import { ContentDto } from '../dto';
 import { TagsService } from './tags.service';
 import { User } from '../../users/entities';
 
@@ -17,11 +16,8 @@ export class UploadService {
     private guildRepo: Repository<Guild>,
     @InjectRepository(University)
     private universityRepo: Repository<University>,
-    @InjectRepository(ContentImage)
-    private imageRepo: Repository<ContentImage>,
-    @InjectRepository(ContentClip)
-    private clipRepo: Repository<ContentClip>,
-    private usersService: UsersService,
+    @InjectRepository(Content)
+    private contentRepo: Repository<Content>,
     private tagsService: TagsService,
   ) {}
 
@@ -48,36 +44,36 @@ export class UploadService {
     }
   }
 
-  async registerContentImage(
-    path: string,
-    data: ContentImageDto,
-    user: User,
-  ): Promise<ContentImage> {
-    //Let usersService handle registering the image to other repos, then register the content to the image repo
+  async registerContent(
+    url: string,
+    { tagIds, title }: ContentDto,
+    creator: User,
+    type: 'image' | 'clip',
+  ): Promise<Content> {
     try {
-      const content = this.imageRepo.create({
-        url: path,
-        title: data.title,
-        type: 'image',
-        creator: user,
-        tags: [],
-        guild: user.guild,
+      const tags = await Promise.all(
+        tagIds.map((tag) => this.tagsService.findTag(tag)),
+      );
+      const content = this.contentRepo.create({
+        url,
+        title,
+        type,
+        creator,
+        tags,
       });
-      console.log(content);
-      this.usersService.uploadContent(user, content);
-      return content;
+      return await this.contentRepo.save(content);
     } catch (e) {
+      console.error(
+        `!!! User with id ${
+          creator.id
+        } failed to create content with title '${title}':\n${JSON.stringify(
+          e,
+        )}`,
+      );
       throw new NotFoundException(
-        `Failed to register content with url: ${path}`,
+        `Failed to register content with url: ${url}`,
       );
     }
-  }
-  async registerContentClip(
-    path: string,
-    data: ContentClipDto,
-    user: User,
-  ): Promise<void> {
-    //Let usersService handle registering the clip to other repos, then register the content to the image repo
   }
   async registerProfileImage(
     path: string,

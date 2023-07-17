@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   Res,
   Header,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService, StreamService } from './services';
@@ -22,15 +23,16 @@ import {
   TagSharpPipe,
 } from './pipes';
 import {
-  ContentClipDto,
-  ContentImageDto,
+  ContentDto,
   InstitutionImageDto,
   TagImageDto,
+  UploadContentResponseDto,
 } from './dto';
 import { Response } from 'express';
 import { memoryStorage } from 'multer';
 import { CurrentUser } from 'src/users/decorators';
 import { User } from 'src/users';
+import { Serialize } from 'src/interceptors';
 
 enum File {
   Institution = 'institution',
@@ -117,19 +119,20 @@ export class FilesController {
   }
 
   @Post(`${File.Image}`)
+  @Serialize(UploadContentResponseDto)
   @UseInterceptors(FileInterceptor('image', getImageOptions(10)))
   uploadContentImage(
     @CurrentUser()
     user: User,
     @UploadedFile(ImageValidator, ContentSharpPipe)
     file: string,
-    @Body() body: ContentImageDto,
+    @Body() body: ContentDto,
   ) {
     if (!user) {
       // TODO: Error handling in case not logged in
-      return;
+      throw new BadRequestException('Not logged in');
     }
-    return this.uploadService.registerContentImage(file, body, user);
+    return this.uploadService.registerContent(file, body, user, 'image');
   }
 
   // TODO: Differentiate uploading clip from image
@@ -140,13 +143,13 @@ export class FilesController {
     user: User,
     @UploadedFile(ClipValidator, ContentClipSharpPipe)
     file: string,
-    @Body() body: ContentClipDto,
+    @Body() body: ContentDto,
   ) {
     if (!user) {
       // TODO: Error handling in case not logged in
       return;
     }
-    return this.uploadService.registerContentClip(file, body, user);
+    return this.uploadService.registerContent(file, body, user, 'clip');
   }
 
   @Post(`${File.Profile}/:id`)

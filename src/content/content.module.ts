@@ -4,25 +4,16 @@ import { FilesController } from './files.controller';
 import { TagsController } from './tags.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ContentClip, ContentImage, Tag } from './entities';
+import { Tag, Content } from './entities';
 import { User } from '../users/entities';
-import { UsersModule } from '../users';
 import { Guild, University } from '../institutions/entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ContentImage,
-      ContentClip,
-      User,
-      Guild,
-      University,
-      Tag,
-    ]),
+    TypeOrmModule.forFeature([User, Guild, University, Content, Tag]),
     MulterModule.register({
       dest: './content',
     }),
-    UsersModule,
   ],
   providers: [UploadService, StreamService, TagsService],
   controllers: [FilesController, TagsController],

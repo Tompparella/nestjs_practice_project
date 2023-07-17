@@ -9,7 +9,8 @@ export class TagsService {
   constructor(@InjectRepository(Tag) private repo: Repository<Tag>) {}
 
   async createTag(tag: CreateTagDto) {
-    return this.repo.create(tag);
+    const createdTag = this.repo.create(tag);
+    return this.repo.save(createdTag);
   }
 
   async updateImage(path: string, id: number) {
@@ -18,5 +19,9 @@ export class TagsService {
 
   async findTag(id: number) {
     return this.repo.findOneBy({ id });
+  }
+
+  async getTags() {
+    return this.repo.find();
   }
 }

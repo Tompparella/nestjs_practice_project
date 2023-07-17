@@ -39,14 +39,14 @@ export class User {
 
   @AfterInsert()
   logInsert() {
-    console.log(`Created user ${this.username} with id ${this.id}`);
+    console.log(`+ Created user ${this.username} with id ${this.id}`);
   }
   @AfterUpdate()
   logUpdate() {
-    console.log(`Updated user ${this.username} with id ${this.id}`);
+    console.log(`! Updated user ${this.username} with id ${this.id}`);
   }
   @AfterRemove()
   logRemove() {
-    console.log(`Removed user ${this.username} with id ${this.id}`);
+    console.log(`- Removed user ${this.username} with id ${this.id}`);
   }
 }

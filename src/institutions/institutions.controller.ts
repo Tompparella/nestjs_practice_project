@@ -11,7 +11,12 @@ import {
 } from '@nestjs/common';
 import { AdminGuard, AuthGuard } from 'src/guards';
 import { Serialize } from 'src/interceptors';
-import { CreateGuildDto, CreateUniversityDto, GetGuildsDto } from './dto';
+import {
+  CreateGuildDto,
+  CreateUniversitiesDto,
+  CreateUniversityDto,
+  GetGuildsDto,
+} from './dto';
 import { GuildDto } from './dto/guild.dto';
 import { GuildService, UniversityService } from './services';
 
@@ -46,6 +51,12 @@ export class InstitutionsController {
   //@UseGuards(AdminGuard, AuthGuard) //TODO: Remove guard-blocking comments!
   createUniversity(@Body() body: CreateUniversityDto) {
     return this.universityService.create(body);
+  }
+
+  @Post(`${Institution.University}-many`)
+  //@UseGuards(AdminGuard, AuthGuard) //TODO: Remove guard-blocking comments!
+  createUniversities(@Body() body: CreateUniversitiesDto) {
+    return this.universityService.createMany(body);
   }
 
   @Get(`${Institution.Guild}/:id`)

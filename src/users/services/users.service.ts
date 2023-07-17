@@ -77,8 +77,12 @@ export class UsersService {
     this.repo.remove(user);
   }
 
-  async uploadContent(user: User, content: Content): Promise<void> {
-    console.log(JSON.stringify(user));
-    console.log(JSON.stringify(content));
+  async registerContent(user: User, content: Content): Promise<User> {
+    if (user.content) {
+      user.content.push(content);
+    } else {
+      this.repo.update(user.id, { content: [content] });
+    }
+    return this.repo.save(user);
   }
 }
