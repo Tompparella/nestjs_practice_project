@@ -18,6 +18,13 @@ import { CreateUserDto, LoginUserDto, UpdateUserDto, UserDto } from './dto';
 import { User } from './entities';
 import { AuthService, UsersService } from './services';
 
+enum Path {
+  WhoAmI = '/whoami',
+  Register = '/register',
+  Login = '/login',
+  Logout = '/logout',
+}
+
 @Controller('users')
 @Serialize(UserDto)
 export class UsersController {
@@ -26,20 +33,20 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  @Get('/whoami')
+  @Get(Path.WhoAmI)
   @UseGuards(AuthGuard)
   whoAmI(@CurrentUser() user: User) {
     return user;
   }
 
-  @Post('/register')
+  @Post(Path.Register)
   async register(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.register(body);
     session.userId = user.id;
     return user;
   }
 
-  @Post('/login')
+  @Post(Path.Login)
   async login(
     @Body() { email, password }: LoginUserDto,
     @Session() session: any,
@@ -49,7 +56,7 @@ export class UsersController {
     return user;
   }
 
-  @Post('/logout')
+  @Post(Path.Logout)
   logout(@Session() session: any) {
     session.userId = null;
   }

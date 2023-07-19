@@ -37,10 +37,10 @@ export class GuildService {
   find(universityId: number): Promise<Guild[]> {
     return this.repo.findBy({ university: { id: universityId } });
   }
-  findOne(id: number): Promise<Guild> {
+  findOne(id: number, relations?: string[]): Promise<Guild> {
     if (!id) {
       return null;
     }
-    return this.repo.findOneBy({ id });
+    return this.repo.findOne({ where: { id }, relations });
   }
 }

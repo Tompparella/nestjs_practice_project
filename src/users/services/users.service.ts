@@ -31,11 +31,11 @@ export class UsersService {
     return await this.repo.save(user);
   }
 
-  findOne(id: number): Promise<User> {
+  findOne(id: number, relations?: string[]): Promise<User> {
     if (!id) {
       return null;
     }
-    return this.repo.findOneBy({ id });
+    return this.repo.findOne({ where: { id }, relations });
   }
 
   find(email: string): Promise<User[]> {

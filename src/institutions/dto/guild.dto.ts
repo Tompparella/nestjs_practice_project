@@ -1,4 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
+import { University } from '../entities';
 
 export class GuildDto {
   @Expose()
@@ -11,6 +12,6 @@ export class GuildDto {
   imageUrl: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.university.id)
-  universityId: number;
+  @Transform(({ obj }) => obj.university)
+  university: University;
 }
