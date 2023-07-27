@@ -59,6 +59,7 @@ export class UploadService {
         title,
         type,
         creator,
+        guild: creator.guild,
         tags,
       });
       return await this.contentRepo.save(content);

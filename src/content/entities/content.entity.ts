@@ -27,24 +27,27 @@ export class Content {
   @Column({ default: 0 })
   dislikes: number;
 
-  @Column()
+  @Column({ nullable: false })
   title: string;
 
-  @Column()
+  @Column({ nullable: false })
   type: 'image' | 'clip';
 
   @ManyToOne(() => User, (user) => user.content, {
     eager: true,
+    nullable: false,
   })
   creator: User;
 
   @ManyToOne(() => Guild, (guild) => guild.content, {
     eager: true,
+    nullable: false,
   })
   guild: Guild;
 
   @ManyToMany(() => Tag, (tag) => tag.content, {
     eager: true,
+    nullable: false,
   })
   @JoinTable()
   tags: Tag[];
