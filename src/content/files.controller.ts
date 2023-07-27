@@ -80,6 +80,12 @@ export class FilesController {
     return this.streamService.getInstitutionImage(image);
   }
 
+  @Get(`${File.Tag}/:image`)
+  @Header('Content-Type', 'image/webp')
+  getTagImage(@Param('image') image: string) {
+    return this.streamService.getTagImage(image);
+  }
+
   @Get(`${File.Image}/:image`)
   @Header('Content-Type', 'image/webp')
   getContentImage(@Res() response: Response, @Param('image') image: string) {
