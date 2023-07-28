@@ -8,6 +8,7 @@ import {
   AfterUpdate,
   AfterRemove,
   ManyToOne,
+  ManyToMany,
   OneToMany,
 } from 'typeorm';
 
@@ -36,6 +37,12 @@ export class User {
 
   @OneToMany(() => Content, (content) => content.creator)
   content: Content[];
+
+  @ManyToMany(() => Content, (post) => post.likes)
+  liked: Content[];
+
+  @ManyToMany(() => Content, (post) => post.dislikes)
+  disliked: Content[];
 
   @AfterInsert()
   logInsert() {

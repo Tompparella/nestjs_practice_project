@@ -6,7 +6,6 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
-  Res,
   Header,
   BadRequestException,
 } from '@nestjs/common';
@@ -28,7 +27,6 @@ import {
   TagImageDto,
   UploadContentResponseDto,
 } from './dto';
-import { Response } from 'express';
 import { memoryStorage } from 'multer';
 import { CurrentUser } from 'src/users/decorators';
 import { User } from 'src/users';
@@ -88,14 +86,14 @@ export class FilesController {
 
   @Get(`${File.Image}/:image`)
   @Header('Content-Type', 'image/webp')
-  getContentImage(@Res() response: Response, @Param('image') image: string) {
-    return this.streamService.getContentImage(image, response);
+  getContentImage(@Param('image') image: string) {
+    return this.streamService.getContentImage(image);
   }
 
   @Get(`${File.Clip}/:clip`)
   @Header('Content-Type', 'video/ogg')
-  getContentClip(@Res() response: Response, @Param('clip') clip: string) {
-    return this.streamService.getContentClip(clip, response);
+  getContentClip(@Param('clip') clip: string) {
+    return this.streamService.getContentClip(clip);
   }
 
   @Post(`${File.Institution}`)

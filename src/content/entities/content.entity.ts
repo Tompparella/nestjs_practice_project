@@ -21,12 +21,6 @@ export class Content {
   @Column({ unique: true })
   url: string;
 
-  @Column({ default: 0 })
-  likes: number;
-
-  @Column({ default: 0 })
-  dislikes: number;
-
   @Column({ nullable: false })
   title: string;
 
@@ -51,6 +45,20 @@ export class Content {
   })
   @JoinTable()
   tags: Tag[];
+
+  @ManyToMany(() => User, (user) => user.liked, {
+    eager: true,
+    nullable: false,
+  })
+  @JoinTable()
+  likes: User[];
+
+  @ManyToMany(() => User, (user) => user.disliked, {
+    eager: true,
+    nullable: false,
+  })
+  @JoinTable()
+  dislikes: User[];
 
   @AfterInsert()
   logInsert() {

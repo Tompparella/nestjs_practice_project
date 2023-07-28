@@ -26,6 +26,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         database: config.get<string>('DB_NAME'),
         synchronize: process.env.NODE_ENV !== 'production',
         entities: [User, University, Guild, Tag, Content],
+        cache: true,
       }),
     }),
     UsersModule,

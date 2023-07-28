@@ -2,20 +2,20 @@ import { Transform } from 'class-transformer';
 import { IsEmail, IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsEmail()
   @IsOptional()
+  @IsEmail()
   email: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   username: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   password: string;
 
+  @IsOptional()
   @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()
-  @IsOptional()
   guildId: number;
 }

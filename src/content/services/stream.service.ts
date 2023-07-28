@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { createReadStream, existsSync } from 'fs';
 import { join } from 'path';
-import { Response } from 'express';
 import { FilePath } from '../pipes';
 
 @Injectable()
@@ -28,7 +27,7 @@ export class StreamService {
       throw new NotFoundException(`Tag image with filename ${image} not found`);
     }
   }
-  getContentImage(image: string, response: Response): StreamableFile {
+  getContentImage(image: string): StreamableFile {
     const path = join(process.cwd(), `${FilePath.Image}/${image}`);
     if (existsSync(path)) {
       const file = createReadStream(path);
@@ -41,7 +40,7 @@ export class StreamService {
       );
     }
   }
-  getContentClip(clip: string, response: Response): StreamableFile {
+  getContentClip(clip: string): StreamableFile {
     const path = join(process.cwd(), `${FilePath.Clip}/${clip}`);
     if (existsSync(path)) {
       const file = createReadStream(path);
