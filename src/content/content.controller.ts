@@ -11,23 +11,23 @@ export class ContentController {
   @Get()
   getContent(
     @CurrentUser()
-    { id: userId }: User,
+    user: User,
     @Query() query: GetContentDto,
   ) {
-    if (!userId) {
+    if (!user?.id) {
       throw new BadRequestException('You need to login before viewing content');
     }
     const { guildId, universityId, index } = query;
     if (guildId !== undefined) {
-      return this.contentService.getContentFromGuild(userId, guildId, index);
+      return this.contentService.getContentFromGuild(user.id, guildId, index);
     } else if (universityId !== undefined) {
       return this.contentService.getContentFromUniversity(
-        userId,
+        user.id,
         universityId,
         index,
       );
     } else {
-      return this.contentService.getCommonContent(userId, index);
+      return this.contentService.getCommonContent(user.id, index);
     }
   }
 }

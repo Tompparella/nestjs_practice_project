@@ -1,19 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions, Not } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Content } from '../entities';
-
-const defaultOptions: FindManyOptions<Content> = {
-  order: { id: 'DESC' },
-  relations: {
-    likes: true,
-    dislikes: true,
-    guild: { university: true },
-    tags: true,
-    creator: true,
-  },
-  take: 25,
-};
 
 @Injectable()
 export class ContentService {
@@ -22,65 +10,80 @@ export class ContentService {
   ) {}
 
   async getContentFromUniversity(userId = -1, id: number, index: number) {
-    this.contentRepo.find({
-      ...defaultOptions,
-      where: {
-        likes: { id: Not(userId) },
-        dislikes: { id: Not(userId) },
-        guild: {
-          university: {
-            id,
-          },
-        },
-      },
-    });
+    return this.contentRepo
+      .createQueryBuilder('content')
+      .select([
+        'content',
+        'guild',
+        'likes',
+        'dislikes',
+        'guild.university',
+        'tags',
+        'creator.id',
+        'creator.username',
+      ])
+      .leftJoin('content.creator', 'creator')
+      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
+      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
+        userId,
+      })
+      .leftJoin('content.guild', 'guild', 'guild.id = :id', { id })
+      .leftJoin('guild.university', 'guild.university')
+      .leftJoin('content.tags', 'tags')
+      .orderBy('content.id', 'DESC')
+      .take(25)
+      .getMany();
   }
 
   async getContentFromGuild(userId = -1, id: number, index: number) {
-    console.log(userId);
-    return (
-      this.contentRepo
-        .createQueryBuilder('content')
-        .leftJoin('content.creator', 'creator')
-        .leftJoin('content.likes', 'likes')
-        .leftJoin('content.dislikes', 'dislikes')
-        .leftJoin('content.guild', 'guild')
-        .leftJoin('guild.university', 'guild.university')
-        .leftJoin('content.tags', 'tags')
-        .where('guild.id = :id', { id })
-        /* .andWhere(`content.likes != :userId`, { userId })
-      .andWhere('content.dislikes != :userId', { userId }) */
-        .select([
-          'content',
-          'guild',
-          'likes',
-          'dislikes',
-          'guild.university',
-          'tags',
-          'creator.id',
-          'creator.username',
-        ])
-        .getMany()
-    );
-    /* const lol = await this.contentRepo.find({
-      ...defaultOptions,
-      where: {
-        likes: { id: Not(ArrayContainedBy(userId)) },
-        dislikes: { id: Not(ArrayContainedBy(userId)) },
-        guild: {
-          id,
-        },
-      },
-    }); */
+    return this.contentRepo
+      .createQueryBuilder('content')
+      .select([
+        'content',
+        'guild',
+        'likes',
+        'dislikes',
+        'guild.university',
+        'tags',
+        'creator.id',
+        'creator.username',
+      ])
+      .leftJoin('content.creator', 'creator')
+      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
+      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
+        userId,
+      })
+      .leftJoin('content.guild', 'guild', 'guild.id = :id', { id })
+      .leftJoin('guild.university', 'guild.university')
+      .leftJoin('content.tags', 'tags')
+      .orderBy('content.id', 'DESC')
+      .take(25)
+      .getMany();
   }
 
   async getCommonContent(userId = -1, index: number) {
-    this.contentRepo.find({
-      ...defaultOptions,
-      where: {
-        likes: { id: Not(userId) },
-        dislikes: { id: Not(userId) },
-      },
-    });
+    return this.contentRepo
+      .createQueryBuilder('content')
+      .select([
+        'content',
+        'guild',
+        'likes',
+        'dislikes',
+        'guild.university',
+        'tags',
+        'creator.id',
+        'creator.username',
+      ])
+      .leftJoin('content.creator', 'creator')
+      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
+      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
+        userId,
+      })
+      .leftJoin('content.guild', 'guild')
+      .leftJoin('guild.university', 'guild.university')
+      .leftJoin('content.tags', 'tags')
+      .orderBy('content.id', 'DESC')
+      .take(25)
+      .getMany();
   }
 }
