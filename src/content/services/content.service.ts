@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Content } from '../entities';
+import { User } from 'src/users';
 
 @Injectable()
 export class ContentService {
@@ -19,8 +25,8 @@ export class ContentService {
       .select([
         'content',
         'guild',
-        'likes',
-        'dislikes',
+        'likes.id',
+        'dislikes.id',
         'university',
         'tags',
         'creator.id',
@@ -29,7 +35,7 @@ export class ContentService {
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
       .leftJoin('content.creator', 'creator')
-      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
+      .leftJoin('content.likes', 'likes', 'likes.id != :userId', { userId })
       .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
         userId,
       })
@@ -46,8 +52,8 @@ export class ContentService {
       .select([
         'content',
         'guild',
-        'likes',
-        'dislikes',
+        'likes.id',
+        'dislikes.id',
         'university',
         'tags',
         'creator.id',
@@ -72,16 +78,16 @@ export class ContentService {
       .select([
         'content',
         'guild',
-        'likes',
-        'dislikes',
+        'likes.id',
+        'dislikes.id',
         'university',
         'tags',
         'creator.id',
         'creator.username',
       ])
       .leftJoin('content.creator', 'creator')
-      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId }) // TODO: Filtering by likes is broken. Fix
-      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
+      .leftJoin('content.likes', 'likes', 'likes.id != :userId', { userId }) // TODO: Filtering by likes is broken. Fix
+      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :userId', {
         userId,
       })
       .leftJoin('content.guild', 'guild')
@@ -90,5 +96,60 @@ export class ContentService {
       .orderBy('content.id', 'DESC')
       .take(25)
       .getMany();
+  }
+
+  async findContentToBeRated(contentId: number, user: User) {
+    const content = await this.contentRepo
+      .createQueryBuilder('content')
+      .leftJoin('content.likes', 'likes', 'likes.id = :userId', {
+        userId: user.id,
+      })
+      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id = :userId', {
+        userId: user.id,
+      })
+      .where('content.id = :contentId', { contentId })
+      .select(['content', 'likes.id', 'dislikes.id'])
+      .getOne();
+    if (content) {
+      const ratings = content.likes
+        .flatMap((rating) => rating.id)
+        .concat(content.dislikes.flatMap((rating) => rating.id));
+      if (ratings.includes(user.id)) {
+        throw new BadRequestException("You've already rated this content!");
+      } else {
+        return content;
+      }
+    } else {
+      throw new NotFoundException('No content found with given id');
+    }
+  }
+
+  async likeContent(contentId: number, user: User) {
+    try {
+      const content = await this.findContentToBeRated(contentId, user);
+      content.likes.push(user);
+      const result = await this.contentRepo.save(content);
+      return Boolean(result);
+    } catch (e) {
+      console.error(`User ${user.id} failed to rate content ${contentId}`); // TODO: Better logging
+      return new InternalServerErrorException(
+        "An unexpected error happened while attempting to like content. If the error doesn't disappear with a page reload, please contact administration.",
+      );
+    }
+  }
+
+  async dislikeContent(contentId: number, user: User) {
+    // TODO: Tag handling
+    try {
+      const content = await this.findContentToBeRated(contentId, user);
+      content.dislikes.push(user);
+      const result = await this.contentRepo.save(content);
+      return Boolean(result);
+    } catch (e) {
+      console.error(`User ${user.id} failed to rate content ${contentId}`); // TODO: Better logging
+      return new InternalServerErrorException(
+        "An unexpected error happened while attempting to dislike content. If the error doesn't disappear with a page reload, please contact administration.",
+      );
+    }
   }
 }

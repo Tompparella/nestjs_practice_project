@@ -1,8 +1,19 @@
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Query,
+} from '@nestjs/common';
 import { ContentService } from './services';
-import { GetContentDto } from './dto';
+import { GetContentDto, RateContentDto } from './dto';
 import { CurrentUser } from 'src/users/decorators';
 import { User } from 'src/users';
+
+enum Content {
+  Rate = 'rate',
+}
 
 @Controller('content')
 export class ContentController {
@@ -28,6 +39,28 @@ export class ContentController {
       );
     } else {
       return this.contentService.getCommonContent(user.id, index);
+    }
+  }
+
+  @Patch()
+  modifyContent() {
+    // TODO: Option to modify users own content
+  }
+
+  @Patch(Content.Rate)
+  rateContent(
+    @CurrentUser()
+    user: User,
+    @Body() body: RateContentDto,
+  ) {
+    if (!user) {
+      throw new BadRequestException('You need to login before rating content');
+    }
+    const { contentId, rating } = body;
+    if (rating === 'like') {
+      return this.contentService.likeContent(contentId, user);
+    } else if (rating === 'dislike') {
+      return this.contentService.dislikeContent(contentId, user);
     }
   }
 }
