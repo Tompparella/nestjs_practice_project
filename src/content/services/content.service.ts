@@ -9,7 +9,11 @@ export class ContentService {
     @InjectRepository(Content) private contentRepo: Repository<Content>,
   ) {}
 
-  async getContentFromUniversity(userId = -1, id: number, index: number) {
+  async getContentFromUniversity(
+    userId = -1,
+    universityId: number,
+    index: number,
+  ) {
     return this.contentRepo
       .createQueryBuilder('content')
       .select([
@@ -17,25 +21,26 @@ export class ContentService {
         'guild',
         'likes',
         'dislikes',
-        'guild.university',
+        'university',
         'tags',
         'creator.id',
         'creator.username',
       ])
+      .leftJoin('content.guild', 'guild')
+      .leftJoin('guild.university', 'university')
       .leftJoin('content.creator', 'creator')
       .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
       .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
         userId,
       })
-      .leftJoin('content.guild', 'guild', 'guild.id = :id', { id })
-      .leftJoin('guild.university', 'guild.university')
       .leftJoin('content.tags', 'tags')
+      .where('university.id = :universityId', { universityId })
       .orderBy('content.id', 'DESC')
       .take(25)
       .getMany();
   }
 
-  async getContentFromGuild(userId = -1, id: number, index: number) {
+  async getContentFromGuild(userId = -1, guildId: number, index: number) {
     return this.contentRepo
       .createQueryBuilder('content')
       .select([
@@ -43,18 +48,18 @@ export class ContentService {
         'guild',
         'likes',
         'dislikes',
-        'guild.university',
+        'university',
         'tags',
         'creator.id',
         'creator.username',
       ])
+      .innerJoin('content.guild', 'guild', 'guild.id = :guildId', { guildId })
       .leftJoin('content.creator', 'creator')
-      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
-      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
+      .leftJoin('content.likes', 'likes', 'likes.id != :userId', { userId })
+      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :userId', {
         userId,
       })
-      .leftJoin('content.guild', 'guild', 'guild.id = :id', { id })
-      .leftJoin('guild.university', 'guild.university')
+      .leftJoin('guild.university', 'university')
       .leftJoin('content.tags', 'tags')
       .orderBy('content.id', 'DESC')
       .take(25)
@@ -69,18 +74,18 @@ export class ContentService {
         'guild',
         'likes',
         'dislikes',
-        'guild.university',
+        'university',
         'tags',
         'creator.id',
         'creator.username',
       ])
       .leftJoin('content.creator', 'creator')
-      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId })
+      .leftJoin('content.likes', 'likes', 'likes.id != :id', { userId }) // TODO: Filtering by likes is broken. Fix
       .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
         userId,
       })
       .leftJoin('content.guild', 'guild')
-      .leftJoin('guild.university', 'guild.university')
+      .leftJoin('guild.university', 'university')
       .leftJoin('content.tags', 'tags')
       .orderBy('content.id', 'DESC')
       .take(25)
