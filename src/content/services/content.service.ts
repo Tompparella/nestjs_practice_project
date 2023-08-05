@@ -1,11 +1,10 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Brackets } from 'typeorm';
 import { Content } from '../entities';
 import { User } from 'src/users';
 
@@ -15,12 +14,49 @@ export class ContentService {
     @InjectRepository(Content) private contentRepo: Repository<Content>,
   ) {}
 
+  /**
+   *
+   * @param userId
+   * @param universityId
+   * @param index
+   * @returns Content[]
+   *
+   * Common for all queries is that we want to filter the data that a user can fetch from the database.
+   * We also want to return only the content that the user is yet to rate. There will be a separate query
+   * for fetching already rated content.
+   */
+
+  async getRandomContent(index: number) {
+    return this.contentRepo
+      .createQueryBuilder('content')
+      .select([
+        'content',
+        'guild',
+        'likes.id',
+        'dislikes.id',
+        'university',
+        'tags',
+        'creator.id',
+        'creator.username',
+      ]) // TODO: Timestamp!!
+      .leftJoin('content.guild', 'guild')
+      .leftJoin('guild.university', 'university')
+      .leftJoin('content.creator', 'creator')
+      .leftJoin('content.likes', 'likes')
+      .leftJoin('content.dislikes', 'dislikes')
+      .leftJoin('content.tags', 'tags')
+      .orderBy('RANDOM()')
+      .offset(index)
+      .take(10)
+      .getMany();
+  }
+
   async getContentFromUniversity(
     userId = -1,
     universityId: number,
     index: number,
   ) {
-    return this.contentRepo
+    const result = await this.contentRepo
       .createQueryBuilder('content')
       .select([
         'content',
@@ -41,13 +77,34 @@ export class ContentService {
       })
       .leftJoin('content.tags', 'tags')
       .where('university.id = :universityId', { universityId })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('dislikes.id IS NULL').orWhere(
+            ':userId NOT IN(dislikes.id)',
+            { userId },
+          );
+        }),
+      )
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('likes.id IS NULL').orWhere(':userId NOT IN(likes.id)', {
+            userId,
+          });
+        }),
+      )
       .orderBy('content.id', 'DESC')
-      .take(25)
+      .offset(index)
+      .take(10)
       .getMany();
+    if (result.length > 0) {
+      return result;
+    } else {
+      return this.getRandomContent(index);
+    }
   }
 
   async getContentFromGuild(userId = -1, guildId: number, index: number) {
-    return this.contentRepo
+    const result = await this.contentRepo
       .createQueryBuilder('content')
       .select([
         'content',
@@ -61,19 +118,38 @@ export class ContentService {
       ])
       .innerJoin('content.guild', 'guild', 'guild.id = :guildId', { guildId })
       .leftJoin('content.creator', 'creator')
-      .leftJoin('content.likes', 'likes', 'likes.id != :userId', { userId })
-      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :userId', {
-        userId,
-      })
+      .leftJoin('content.likes', 'likes')
+      .leftJoin('content.dislikes', 'dislikes')
       .leftJoin('guild.university', 'university')
       .leftJoin('content.tags', 'tags')
+      .where(
+        new Brackets((qb) => {
+          qb.where('dislikes.id IS NULL').orWhere(
+            ':userId NOT IN(dislikes.id)',
+            { userId },
+          );
+        }),
+      )
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('likes.id IS NULL').orWhere(':userId NOT IN(likes.id)', {
+            userId,
+          });
+        }),
+      )
       .orderBy('content.id', 'DESC')
-      .take(25)
+      .offset(index)
+      .take(10)
       .getMany();
+    if (result.length > 0) {
+      return result;
+    } else {
+      return this.getRandomContent(index);
+    }
   }
 
   async getCommonContent(userId = -1, index: number) {
-    return this.contentRepo
+    const result = await this.contentRepo
       .createQueryBuilder('content')
       .select([
         'content',
@@ -86,16 +162,35 @@ export class ContentService {
         'creator.username',
       ])
       .leftJoin('content.creator', 'creator')
-      .leftJoin('content.likes', 'likes', 'likes.id != :userId', { userId }) // TODO: Filtering by likes is broken. Fix
-      .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :userId', {
-        userId,
-      })
+      .leftJoin('content.likes', 'likes')
+      .leftJoin('content.dislikes', 'dislikes')
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
       .leftJoin('content.tags', 'tags')
+      .where(
+        new Brackets((qb) => {
+          qb.where('dislikes.id IS NULL').orWhere(
+            ':userId NOT IN(dislikes.id)',
+            { userId },
+          );
+        }),
+      )
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('likes.id IS NULL').orWhere(':userId NOT IN(likes.id)', {
+            userId,
+          });
+        }),
+      )
       .orderBy('content.id', 'DESC')
-      .take(25)
+      .offset(index)
+      .take(10)
       .getMany();
+    if (result.length > 0) {
+      return result;
+    } else {
+      return this.getRandomContent(index);
+    }
   }
 
   async findContentToBeRated(contentId: number, user: User) {
@@ -131,10 +226,7 @@ export class ContentService {
       const result = await this.contentRepo.save(content);
       return Boolean(result);
     } catch (e) {
-      console.error(`User ${user.id} failed to rate content ${contentId}`); // TODO: Better logging
-      return new InternalServerErrorException(
-        "An unexpected error happened while attempting to like content. If the error doesn't disappear with a page reload, please contact administration.",
-      );
+      throw e;
     }
   }
 
@@ -146,10 +238,7 @@ export class ContentService {
       const result = await this.contentRepo.save(content);
       return Boolean(result);
     } catch (e) {
-      console.error(`User ${user.id} failed to rate content ${contentId}`); // TODO: Better logging
-      return new InternalServerErrorException(
-        "An unexpected error happened while attempting to dislike content. If the error doesn't disappear with a page reload, please contact administration.",
-      );
+      throw e;
     }
   }
 }

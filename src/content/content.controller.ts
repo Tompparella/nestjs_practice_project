@@ -25,10 +25,11 @@ export class ContentController {
     user: User,
     @Query() query: GetContentDto,
   ) {
-    if (!user?.id) {
+    if (user === undefined) {
       throw new BadRequestException('You need to login before viewing content');
     }
     const { guildId, universityId, index } = query;
+    console.log(new Date().getTime());
     if (guildId !== undefined) {
       return this.contentService.getContentFromGuild(user.id, guildId, index);
     } else if (universityId !== undefined) {
