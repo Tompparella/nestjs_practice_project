@@ -76,13 +76,4 @@ export class UsersService {
     }
     this.repo.remove(user);
   }
-
-  async registerContent(user: User, content: Content): Promise<User> {
-    if (user.content) {
-      user.content.push(content);
-    } else {
-      this.repo.update(user.id, { content: [content] });
-    }
-    return this.repo.save(user);
-  }
 }

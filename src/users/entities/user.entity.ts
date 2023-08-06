@@ -29,6 +29,9 @@ export class User {
   @Column({ default: false })
   admin: boolean;
 
+  @Column({ nullable: true })
+  imageUrl: string;
+
   @ManyToOne(() => Guild, (guild) => guild.users, {
     nullable: false,
     eager: true,

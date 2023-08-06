@@ -28,4 +28,8 @@ export class TagsService {
   async getTags() {
     return this.repo.find();
   }
+
+  clear() {
+    return this.repo.clear();
+  }
 }

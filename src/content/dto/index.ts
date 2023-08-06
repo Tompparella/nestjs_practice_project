@@ -5,3 +5,4 @@ export { InstitutionImageDto } from './institution-image.dto';
 export { ContentDto } from './content.dto';
 export { GetContentDto } from './get-content.dto';
 export { RateContentDto } from './rate-content.dto';
+export { DeleteContentDto } from './delete-content.dto';

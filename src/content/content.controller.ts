@@ -2,12 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
+  ForbiddenException,
   Get,
   Patch,
   Query,
 } from '@nestjs/common';
 import { ContentService } from './services';
-import { GetContentDto, RateContentDto } from './dto';
+import { DeleteContentDto, GetContentDto, RateContentDto } from './dto';
 import { CurrentUser } from 'src/users/decorators';
 import { User } from 'src/users';
 
@@ -62,5 +64,23 @@ export class ContentController {
     } else if (rating === 'dislike') {
       return this.contentService.dislikeContent(contentId, user);
     }
+  }
+
+  @Delete()
+  deleteContent(
+    @CurrentUser()
+    user: User,
+    @Query() query: DeleteContentDto,
+  ) {
+    if (!user) {
+      throw new ForbiddenException('You need to be logged in to do that');
+    }
+    return this.contentService.deleteContent(query.id, user);
+  }
+
+  // Do not use outside of testing. KEEP COMMENTED OUT
+  @Delete('all')
+  deleteAllContent() {
+    return this.contentService.clear();
   }
 }

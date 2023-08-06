@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -38,6 +40,7 @@ export class ContentService {
         'tags',
         'creator.id',
         'creator.username',
+        'creator.imageUrl',
       ]) // TODO: Timestamp!!
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
@@ -67,6 +70,7 @@ export class ContentService {
         'tags',
         'creator.id',
         'creator.username',
+        'creator.imageUrl',
       ])
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
@@ -115,6 +119,7 @@ export class ContentService {
         'tags',
         'creator.id',
         'creator.username',
+        'creator.imageUrl',
       ])
       .innerJoin('content.guild', 'guild', 'guild.id = :guildId', { guildId })
       .leftJoin('content.creator', 'creator')
@@ -160,6 +165,7 @@ export class ContentService {
         'tags',
         'creator.id',
         'creator.username',
+        'creator.imageUrl',
       ])
       .leftJoin('content.creator', 'creator')
       .leftJoin('content.likes', 'likes')
@@ -239,6 +245,31 @@ export class ContentService {
       return Boolean(result);
     } catch (e) {
       throw e;
+    }
+  }
+
+  async deleteContent(id: number, user: User) {
+    try {
+      const content = await this.contentRepo.findOne({ where: { id } });
+      console.log(content);
+      if (content && (user.admin || content.creator.id === user.id)) {
+        this.contentRepo.remove(content);
+      } else {
+        return new ForbiddenException(
+          "You don't have the permission to delete that",
+        );
+      }
+    } catch (e) {
+      throw new BadRequestException(`Failed to delete content with id ${id}`);
+    }
+  }
+
+  // Do not use outside of testing
+  clear() {
+    try {
+      return this.contentRepo.clear();
+    } catch (e) {
+      throw new InternalServerErrorException('Operation failed');
     }
   }
 }

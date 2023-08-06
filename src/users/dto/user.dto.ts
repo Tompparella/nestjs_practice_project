@@ -7,11 +7,8 @@ export class UserDto {
   email: string;
   @Expose()
   username: string;
-
-  /*   @Expose()
-  @Transform(({ obj }) => obj.university.id)
-  universityId: number;
- */
+  @Expose()
+  imageUrl: string;
   @Expose()
   @Transform(({ obj }) => obj.guild.id)
   guildId: number;
