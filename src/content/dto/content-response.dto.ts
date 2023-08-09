@@ -43,7 +43,7 @@ export class ContentResponseDto {
   tagWeights: TagWeight[];
  */
   @Expose()
-  @Transform(({ obj }) => obj.creator.guild)
+  @Transform(({ obj }) => obj.guild)
   guild: Guild;
 
   //  Can look into exposing guild once switching between institutions is made possible
