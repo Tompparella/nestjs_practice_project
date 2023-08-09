@@ -29,7 +29,7 @@ export class ContentService {
    */
 
   async getRandomContent(index: number) {
-    return this.contentRepo
+    const result = await this.contentRepo
       .createQueryBuilder('content')
       .select([
         'content',
@@ -52,6 +52,7 @@ export class ContentService {
       .offset(index)
       .take(10)
       .getMany();
+    return result;
   }
 
   async getContentFromUniversity(
@@ -226,6 +227,7 @@ export class ContentService {
   }
 
   async likeContent(contentId: number, user: User) {
+    // TODO: Tag handling
     try {
       const content = await this.findContentToBeRated(contentId, user);
       content.likes.push(user);

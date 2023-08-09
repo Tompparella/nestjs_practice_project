@@ -52,8 +52,13 @@ export class UploadService {
   ): Promise<Content> {
     try {
       const tags = await Promise.all(
-        tagIds.map((tag) => this.tagsService.findTag(tag)),
+        tagIds.map((tag) => {
+          return this.tagsService.findTag(tag.id);
+        }),
       );
+      if (tags.some((tag) => tag === null)) {
+        throw new NotFoundException("Couldn't find a tag for the content");
+      }
       const content = this.contentRepo.create({
         url,
         title,
@@ -61,6 +66,7 @@ export class UploadService {
         creator,
         guild: creator.guild,
         tags,
+        tagWeights: JSON.stringify(tagIds),
       });
       return await this.contentRepo.save(content);
     } catch (e) {

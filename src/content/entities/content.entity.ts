@@ -27,6 +27,13 @@ export class Content {
   @Column({ nullable: false })
   type: 'image' | 'clip';
 
+  /**
+   * Weights are stored as json strings in the following pattern:
+   * { tagId: number, weight: number }[]
+   */
+  @Column()
+  tagWeights: string;
+
   @ManyToOne(() => User, (user) => user.content, {
     eager: true,
     nullable: false,

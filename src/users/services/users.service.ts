@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities';
 import { Repository } from 'typeorm';
 import { GuildService } from 'src/institutions/services';
-import { Content } from 'src/content';
 
 @Injectable()
 export class UsersService {

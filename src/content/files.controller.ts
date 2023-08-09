@@ -25,7 +25,8 @@ import {
   ContentDto,
   InstitutionImageDto,
   TagImageDto,
-  UploadContentResponseDto,
+  TagWeight,
+  ContentResponseDto,
 } from './dto';
 import { memoryStorage } from 'multer';
 import { CurrentUser } from 'src/users/decorators';
@@ -39,6 +40,20 @@ enum File {
   Clip = 'clip',
   Tag = 'tag',
 }
+
+const validateTagWeights = (tagWeights: TagWeight[]) => {
+  const length = tagWeights.length;
+  const weights = tagWeights.map((entry) => entry.weight);
+  return (
+    length > 0 &&
+    length <= 3 &&
+    tagWeights.every(
+      (entry) =>
+        typeof entry.id === 'number' && typeof entry.weight === 'number',
+    ) &&
+    weights.reduce((total, current) => (total += Math.abs(current))) <= 1
+  );
+};
 
 const getImageOptions = (fileSizeMb: number): MulterOptions => ({
   storage: memoryStorage(),
@@ -123,7 +138,7 @@ export class FilesController {
   }
 
   @Post(`${File.Image}`)
-  @Serialize(UploadContentResponseDto)
+  @Serialize(ContentResponseDto)
   @UseInterceptors(FileInterceptor('image', getImageOptions(10)))
   uploadContentImage(
     @CurrentUser()
@@ -136,11 +151,16 @@ export class FilesController {
       // TODO: Error handling in case not logged in
       throw new BadRequestException('Not logged in');
     }
-    return this.uploadService.registerContent(file, body, user, 'image');
+    if (validateTagWeights(body.tagIds)) {
+      return this.uploadService.registerContent(file, body, user, 'image');
+    } else {
+      throw new BadRequestException('TagIds is invalid');
+    }
   }
 
   // TODO: Differentiate uploading clip from image
   @Post(`${File.Clip}`)
+  @Serialize(ContentResponseDto)
   @UseInterceptors(FileInterceptor('clip', clipOptions))
   uploadContentClip(
     @CurrentUser()
@@ -153,7 +173,11 @@ export class FilesController {
       // TODO: Error handling in case not logged in
       return;
     }
-    return this.uploadService.registerContent(file, body, user, 'clip');
+    if (validateTagWeights(body.tagIds)) {
+      return this.uploadService.registerContent(file, body, user, 'clip');
+    } else {
+      throw new BadRequestException('TagIds is invalid');
+    }
   }
 
   @Post(`${File.Profile}/:id`)

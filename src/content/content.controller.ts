@@ -9,9 +9,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { ContentService } from './services';
-import { DeleteContentDto, GetContentDto, RateContentDto } from './dto';
+import {
+  ContentResponseDto,
+  DeleteContentDto,
+  GetContentDto,
+  RateContentDto,
+} from './dto';
 import { CurrentUser } from 'src/users/decorators';
 import { User } from 'src/users';
+import { Serialize } from 'src/interceptors';
 
 enum Content {
   Rate = 'rate',
@@ -22,6 +28,7 @@ export class ContentController {
   constructor(private readonly contentService: ContentService) {}
 
   @Get()
+  @Serialize(ContentResponseDto)
   getContent(
     @CurrentUser()
     user: User,
