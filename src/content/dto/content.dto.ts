@@ -11,11 +11,12 @@ export class ContentDto {
   @Type(() => Object)
   @ArrayMinSize(1)
   @ArrayMaxSize(3)
-  @Transform(({ obj }) =>
-    obj.tagIds?.map((tag) => ({
-      id: Number(tag.id),
-      weight: Number(tag.weight),
-    })),
+  @Transform(
+    ({ obj }) =>
+      obj.tagIds?.map((tag) => ({
+        id: Number(tag.id),
+        weight: Number(tag.weight),
+      })),
   )
   tagIds: TagWeight[];
 
