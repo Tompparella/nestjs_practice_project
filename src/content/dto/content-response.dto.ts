@@ -56,10 +56,10 @@ export class ContentResponseDto {
   creator: User;
 
   @Expose()
-  @Transform(({ obj }) => obj.likes.map((like) => like.id))
+  @Transform(({ obj }) => obj.likes?.map((like) => like.id))
   likes: User[];
 
   @Expose()
-  @Transform(({ obj }) => obj.likes.map((like) => like.id))
+  @Transform(({ obj }) => obj.dislikes?.map((like) => like.id))
   dislikes: User[];
 }
