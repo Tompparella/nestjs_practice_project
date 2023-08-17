@@ -4,14 +4,15 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   JoinTable,
   AfterInsert,
   AfterUpdate,
   AfterRemove,
 } from 'typeorm';
-import { Tag } from './tag.entity';
 import { User } from '../../users/entities';
 import { Guild } from '../../institutions/entities';
+import { ContentProfiling } from './content-profiling.entity';
 
 @Entity()
 export class Content {
@@ -27,13 +28,6 @@ export class Content {
   @Column({ nullable: false })
   type: 'image' | 'clip';
 
-  /**
-   * Weights are stored as json strings in the following pattern:
-   * { tagId: number, weight: number }[]
-   */
-  @Column()
-  tagWeights: string;
-
   @ManyToOne(() => User, (user) => user.content, {
     eager: true,
     nullable: false,
@@ -46,12 +40,17 @@ export class Content {
   })
   guild: Guild;
 
-  @ManyToMany(() => Tag, (tag) => tag.content, {
+  @OneToMany(() => ContentProfiling, (profiling) => profiling.content, {
+    cascade: true,
+  })
+  profiling: ContentProfiling[];
+
+  /* @ManyToMany(() => Tag, (tag) => tag.content, {
     eager: true,
     nullable: false,
   })
   @JoinTable()
-  tags: Tag[];
+  tags: Tag[]; */
 
   @ManyToMany(() => User, (user) => user.liked, {
     eager: true,

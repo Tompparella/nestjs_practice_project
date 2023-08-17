@@ -1,2 +1,2 @@
 export { Content } from './content.entity';
-export { Tag } from './tag.entity';
+export { ContentProfiling } from './content-profiling.entity';

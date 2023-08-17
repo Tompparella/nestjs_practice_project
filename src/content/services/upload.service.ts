@@ -65,8 +65,7 @@ export class UploadService {
         type,
         creator,
         guild: creator.guild,
-        tags,
-        tagWeights: JSON.stringify(tagIds),
+        profiling: tags.map((tag) => ({ weight: 0.33, tag })), // TODO: Redo weight!!!!
       });
       return await this.contentRepo.save(content);
     } catch (e) {

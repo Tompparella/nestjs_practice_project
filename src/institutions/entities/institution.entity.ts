@@ -10,4 +10,7 @@ export class Institution {
 
   @Column({ nullable: true })
   imageUrl: string;
+
+  @Column({ nullable: true })
+  description: string;
 }

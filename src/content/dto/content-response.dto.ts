@@ -1,7 +1,7 @@
 import { Expose, Transform } from 'class-transformer';
 import { Guild } from '../../institutions';
-import { Tag } from '../entities';
-import { User } from 'src/users';
+import { User } from '../../users';
+import { Tag } from '../../common';
 
 export class ContentResponseDto {
   @Expose()
@@ -17,9 +17,8 @@ export class ContentResponseDto {
   type: 'image' | 'clip';
 
   @Expose()
-  @Transform(({ obj }) => {
+  /* @Transform(({ obj }) => {
     try {
-      /* const p1 = performance.now(); */
       const tagWeight = JSON.parse(obj.tagWeights);
       const weightedTags = obj.tags.map((tag: Tag) => {
         const weight = tagWeight.find((item) => item.id === tag.id).weight;
@@ -28,14 +27,12 @@ export class ContentResponseDto {
           weight,
         };
       });
-      /* const p2 = performance.now();
-      console.debug(`${p2 - p1} ms`); */
       return weightedTags;
     } catch (e) {
       console.error(`!--Failed to parse tag weights for content ${obj.id}`);
       return obj.tags;
     }
-  })
+  }) */
   tags: Tag[];
   /* 
   @Expose()
@@ -50,8 +47,8 @@ export class ContentResponseDto {
   @Expose()
   @Transform(({ obj }) => ({
     id: obj.creator.id,
-    username: obj.creator.username,
-    imageUrl: obj.creator.imageUrl,
+    username: obj.creator.profile.username,
+    imageUrl: obj.creator.profile.imageUrl,
   }))
   creator: User;
 

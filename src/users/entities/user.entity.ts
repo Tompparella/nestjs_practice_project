@@ -7,18 +7,18 @@ import {
   AfterInsert,
   AfterUpdate,
   AfterRemove,
+  JoinColumn,
+  OneToOne,
   ManyToOne,
   ManyToMany,
   OneToMany,
 } from 'typeorm';
+import { Profile } from './profile.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ unique: true })
-  username: string;
 
   @Column({ unique: true })
   email: string;
@@ -28,9 +28,6 @@ export class User {
 
   @Column({ default: false })
   admin: boolean;
-
-  @Column({ nullable: true })
-  imageUrl: string;
 
   @ManyToOne(() => Guild, (guild) => guild.users, {
     nullable: false,
@@ -47,16 +44,20 @@ export class User {
   @ManyToMany(() => Content, (post) => post.dislikes)
   disliked: Content[];
 
+  @OneToOne(() => Profile, (profile) => profile.user)
+  @JoinColumn()
+  profile: Profile;
+
   @AfterInsert()
   logInsert() {
-    console.log(`+ Created user ${this.username} with id ${this.id}`);
+    console.log(`+ Created user ${this.id}`);
   }
   @AfterUpdate()
   logUpdate() {
-    console.log(`! Updated user ${this.username} with id ${this.id}`);
+    console.log(`! Updated user ${this.id}`);
   }
   @AfterRemove()
   logRemove() {
-    console.log(`- Removed user ${this.username} with id ${this.id}`);
+    console.log(`- Removed user ${this.id}`);
   }
 }

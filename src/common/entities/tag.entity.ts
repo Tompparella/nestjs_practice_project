@@ -1,9 +1,9 @@
-import { Content } from './content.entity';
+import { ContentProfiling } from '../../content/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToMany,
+  OneToMany,
   AfterInsert,
   AfterUpdate,
   AfterRemove,
@@ -23,8 +23,8 @@ export class Tag {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @ManyToMany(() => Content, (content) => content.tags)
-  content: Content[];
+  @OneToMany(() => ContentProfiling, (profiling) => profiling.tag)
+  contentProfiles: ContentProfiling[];
 
   @AfterInsert()
   logInsert() {
