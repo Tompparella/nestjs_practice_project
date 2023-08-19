@@ -27,7 +27,7 @@ export class UsersService {
       throw new NotFoundException(`Guild with id ${guildId} not found`);
     }
     user.guild = guild; //TODO: Strip user credentials of all unauthorized characters
-    return await this.repo.save(user);
+    return this.repo.save(user);
   }
 
   findOne(id: number, relations?: string[]): Promise<User> {

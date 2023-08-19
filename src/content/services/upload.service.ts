@@ -51,12 +51,13 @@ export class UploadService {
     type: 'image' | 'clip',
   ): Promise<Content> {
     try {
-      const tags = await Promise.all(
-        tagIds.map((tag) => {
-          return this.tagsService.findTag(tag.id);
+      const profiling = await Promise.all(
+        tagIds.map(async ({ id, weight }) => {
+          const tag = await this.tagsService.findTag(id);
+          return { tag, weight };
         }),
       );
-      if (tags.some((tag) => tag === null)) {
+      if (profiling.some(({ tag }) => tag === null)) {
         throw new NotFoundException("Couldn't find a tag for the content");
       }
       const content = this.contentRepo.create({
@@ -64,8 +65,8 @@ export class UploadService {
         title,
         type,
         creator,
-        guild: creator.guild,
-        profiling: tags.map((tag) => ({ weight: 0.33, tag })), // TODO: Redo weight!!!!
+        guild: creator.guild, // TODO: Specific guild handling. Maybe user wants to create content for some other guild?
+        profiling,
       });
       return await this.contentRepo.save(content);
     } catch (e) {

@@ -13,9 +13,10 @@ import {
 import { User } from '../../users/entities';
 import { Guild } from '../../institutions/entities';
 import { ContentProfiling } from './content-profiling.entity';
+import { Base } from '../../common';
 
 @Entity()
-export class Content {
+export class Content extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -42,15 +43,9 @@ export class Content {
 
   @OneToMany(() => ContentProfiling, (profiling) => profiling.content, {
     cascade: true,
+    eager: true,
   })
   profiling: ContentProfiling[];
-
-  /* @ManyToMany(() => Tag, (tag) => tag.content, {
-    eager: true,
-    nullable: false,
-  })
-  @JoinTable()
-  tags: Tag[]; */
 
   @ManyToMany(() => User, (user) => user.liked, {
     eager: true,

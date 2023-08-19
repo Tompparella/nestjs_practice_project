@@ -10,9 +10,10 @@ import {
 } from 'typeorm';
 import { UserProfiling } from './user-profiling.entity';
 import { User } from './user.entity';
+import { Base } from '../../common';
 
 @Entity()
-export class Profile {
+export class Profile extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -35,9 +36,7 @@ export class Profile {
 
   @AfterInsert()
   logInsert() {
-    console.log(
-      `+ Created profile ${this.username} for user id ${this.user.id}`,
-    );
+    console.log(`+ Created profile ${this.username} with id ${this.id}`);
   }
   @AfterUpdate()
   logUpdate() {

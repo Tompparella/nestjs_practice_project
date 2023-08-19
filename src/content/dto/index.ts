@@ -1,6 +1,7 @@
 export { ContentResponseDto } from './content-response.dto';
 export { TagImageDto } from './tag-image.dto';
 export { CreateTagDto } from './create-tag.dto';
+export { CreateTagsDto } from './create-tags.dto';
 export { InstitutionImageDto } from './institution-image.dto';
 export { ContentDto, TagWeight } from './content.dto';
 export { GetContentDto } from './get-content.dto';

@@ -1,12 +1,10 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne } from 'typeorm';
 import { Tag } from './tag.entity';
+import { Base } from './base.entity';
 
 @Entity()
-export class Profiling {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @ManyToOne(() => Tag, (tag) => tag.contentProfiles, {
+export abstract class Profiling extends Base {
+  @ManyToOne(() => Tag, (tag) => tag.profiling, {
     eager: true,
     nullable: false,
   })

@@ -1,4 +1,3 @@
-import { ContentProfiling } from '../../content/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,9 +7,11 @@ import {
   AfterUpdate,
   AfterRemove,
 } from 'typeorm';
+import { Base } from './base.entity';
+import { Profiling } from './profiling.entity';
 
 @Entity()
-export class Tag {
+export class Tag extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,8 +24,8 @@ export class Tag {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @OneToMany(() => ContentProfiling, (profiling) => profiling.tag)
-  contentProfiles: ContentProfiling[];
+  @OneToMany(() => Profiling, (profiling) => profiling.tag)
+  profiling: Profiling[];
 
   @AfterInsert()
   logInsert() {

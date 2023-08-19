@@ -37,17 +37,19 @@ export class ContentService {
         'likes.id',
         'dislikes.id',
         'university',
-        'tags',
+        'profiling',
+        'tag',
         'creator.id',
-        'creator.username',
-        'creator.imageUrl',
+        'creator.profile',
       ]) // TODO: Timestamp!!
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
       .leftJoin('content.creator', 'creator')
+      .leftJoin('creator.profile', 'profile')
       .leftJoin('content.likes', 'likes')
       .leftJoin('content.dislikes', 'dislikes')
-      .leftJoin('content.tags', 'tags')
+      .leftJoin('content.profiling', 'profiling')
+      .leftJoin('profiling.tag', 'tag')
       .orderBy('RANDOM()')
       .offset(index)
       .take(10)
@@ -68,19 +70,21 @@ export class ContentService {
         'likes.id',
         'dislikes.id',
         'university',
-        'tags',
+        'profiling',
+        'tag',
         'creator.id',
-        'creator.username',
-        'creator.imageUrl',
+        'creator.profile',
       ])
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
       .leftJoin('content.creator', 'creator')
+      .leftJoin('creator.profile', 'profile')
       .leftJoin('content.likes', 'likes', 'likes.id != :userId', { userId })
       .leftJoin('content.dislikes', 'dislikes', 'dislikes.id != :id', {
         userId,
       })
-      .leftJoin('content.tags', 'tags')
+      .leftJoin('content.profiling', 'profiling')
+      .leftJoin('profiling.tag', 'tag')
       .where('university.id = :universityId', { universityId })
       .andWhere(
         new Brackets((qb) => {
@@ -117,17 +121,19 @@ export class ContentService {
         'likes.id',
         'dislikes.id',
         'university',
-        'tags',
+        'profiling',
+        'tag',
         'creator.id',
-        'creator.username',
-        'creator.imageUrl',
+        'creator.profile',
       ])
       .innerJoin('content.guild', 'guild', 'guild.id = :guildId', { guildId })
       .leftJoin('content.creator', 'creator')
+      .leftJoin('creator.profile', 'profile')
       .leftJoin('content.likes', 'likes')
       .leftJoin('content.dislikes', 'dislikes')
       .leftJoin('guild.university', 'university')
-      .leftJoin('content.tags', 'tags')
+      .leftJoin('content.profiling', 'profiling')
+      .leftJoin('profiling.tag', 'tag')
       .where(
         new Brackets((qb) => {
           qb.where('dislikes.id IS NULL').orWhere(
@@ -163,17 +169,19 @@ export class ContentService {
         'likes.id',
         'dislikes.id',
         'university',
-        'tags',
+        'profiling',
+        'tag',
         'creator.id',
-        'creator.username',
-        'creator.imageUrl',
+        'creator.profile',
       ])
       .leftJoin('content.creator', 'creator')
+      .leftJoin('creator.profile', 'profile')
       .leftJoin('content.likes', 'likes')
       .leftJoin('content.dislikes', 'dislikes')
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
-      .leftJoin('content.tags', 'tags')
+      .leftJoin('content.profiling', 'profiling')
+      .leftJoin('profiling.tag', 'tag')
       .where(
         new Brackets((qb) => {
           qb.where('dislikes.id IS NULL').orWhere(
@@ -253,7 +261,6 @@ export class ContentService {
   async deleteContent(id: number, user: User) {
     try {
       const content = await this.contentRepo.findOne({ where: { id } });
-      console.log(content);
       if (content && (user.admin || content.creator.id === user.id)) {
         this.contentRepo.remove(content);
       } else {

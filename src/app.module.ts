@@ -5,15 +5,19 @@ import { AppService } from './app.service';
 import { UsersModule } from './users';
 import { InstitutionsModule } from './institutions';
 import { ContentModule } from './content';
-import { University, Guild } from './institutions/entities';
+import {
+  University,
+  Guild,
+  InstitutionProfiling,
+  Institution,
+} from './institutions/entities';
 import { Content, ContentProfiling } from './content/entities';
 import { User, UserProfiling } from './users/entities';
-import { ProfilesModule } from './profiles';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieSession from 'cookie-session';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Profile } from './users/entities/profile.entity';
-import { Tag } from './common';
+import { Profile } from './users/entities';
+import { Profiling, Tag } from './common';
 
 @Module({
   imports: [
@@ -30,8 +34,11 @@ import { Tag } from './common';
         entities: [
           User,
           Profile,
+          Profiling,
           UserProfiling,
           ContentProfiling,
+          InstitutionProfiling,
+          Institution,
           University,
           Guild,
           Tag,
@@ -43,7 +50,6 @@ import { Tag } from './common';
     UsersModule,
     InstitutionsModule,
     ContentModule,
-    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [

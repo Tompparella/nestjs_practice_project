@@ -14,9 +14,10 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Profile } from './profile.entity';
+import { Base } from '../../common';
 
 @Entity()
-export class User {
+export class User extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -44,7 +45,10 @@ export class User {
   @ManyToMany(() => Content, (post) => post.dislikes)
   disliked: Content[];
 
-  @OneToOne(() => Profile, (profile) => profile.user)
+  @OneToOne(() => Profile, (profile) => profile.user, {
+    cascade: true,
+    eager: true,
+  })
   @JoinColumn()
   profile: Profile;
 

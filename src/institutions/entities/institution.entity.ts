@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Base } from '../../common';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { InstitutionProfiling } from './institution-profiling.entity';
 
 @Entity()
-export class Institution {
+export abstract class Institution extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,4 +15,10 @@ export class Institution {
 
   @Column({ nullable: true })
   description: string;
+
+  @OneToMany(() => InstitutionProfiling, (profiling) => profiling.institution, {
+    cascade: true,
+    eager: true,
+  })
+  profiling: InstitutionProfiling[];
 }
