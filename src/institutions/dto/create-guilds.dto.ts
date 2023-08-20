@@ -10,8 +10,8 @@ export class CreateGuildsDto {
   @Type(() => String)
   descriptions: string[];
 
-  @Transform(({ obj }) =>
-    obj.universityIds?.map((value) => parseInt(value, 10)),
+  @Transform(
+    ({ obj }) => obj.universityIds?.map((value) => parseInt(value, 10)),
   )
   @IsArray()
   universityIds: number[];
