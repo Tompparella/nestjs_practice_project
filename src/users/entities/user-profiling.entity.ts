@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Column,
-  ManyToOne,
-  AfterInsert,
-  AfterUpdate,
-  AfterRemove,
-} from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { Profile } from './profile.entity';
 import { Profiling } from '../../common';
 

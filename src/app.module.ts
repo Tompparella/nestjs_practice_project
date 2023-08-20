@@ -1,22 +1,21 @@
+import cookieSession from 'cookie-session';
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users';
+import { User, UserProfiling, Profile } from './users/entities';
 import { InstitutionsModule } from './institutions';
-import { ContentModule } from './content';
 import {
   University,
   Guild,
   InstitutionProfiling,
   Institution,
 } from './institutions/entities';
+import { ContentModule } from './content';
 import { Content, ContentProfiling } from './content/entities';
-import { User, UserProfiling } from './users/entities';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import cookieSession from 'cookie-session';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Profile } from './users/entities';
 import { Profiling, Tag } from './common';
 
 @Module({
