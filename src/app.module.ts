@@ -1,17 +1,22 @@
+import cookieSession from 'cookie-session';
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users';
+import { User, UserProfiling, Profile } from './users/entities';
 import { InstitutionsModule } from './institutions';
+import {
+  University,
+  Guild,
+  InstitutionProfiling,
+  Institution,
+} from './institutions/entities';
 import { ContentModule } from './content';
-import { University, Guild } from './institutions/entities';
-import { Content, Tag } from './content/entities';
-import { User } from './users/entities';
-import { ProfilesModule } from './profiles';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import cookieSession from 'cookie-session';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Content, ContentProfiling } from './content/entities';
+import { Profiling, Tag } from './common';
 
 @Module({
   imports: [
@@ -25,14 +30,25 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         type: 'sqlite',
         database: config.get<string>('DB_NAME'),
         synchronize: process.env.NODE_ENV !== 'production',
-        entities: [User, University, Guild, Tag, Content],
+        entities: [
+          User,
+          Profile,
+          Profiling,
+          UserProfiling,
+          ContentProfiling,
+          InstitutionProfiling,
+          Institution,
+          University,
+          Guild,
+          Tag,
+          Content,
+        ],
         cache: true,
       }),
     }),
     UsersModule,
     InstitutionsModule,
     ContentModule,
-    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [

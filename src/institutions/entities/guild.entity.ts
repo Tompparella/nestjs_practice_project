@@ -17,7 +17,7 @@ export class Guild extends Institution {
   users: User[];
 
   @OneToMany(() => Content, (content) => content.guild)
-  content: Content;
+  content: Content[];
 
   @ManyToOne(() => University, (university) => university.guilds, {
     nullable: false,

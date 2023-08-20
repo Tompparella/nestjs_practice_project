@@ -13,6 +13,7 @@ import { AdminGuard, AuthGuard } from 'src/guards';
 import { Serialize } from 'src/interceptors';
 import {
   CreateGuildDto,
+  CreateGuildsDto,
   CreateUniversitiesDto,
   CreateUniversityDto,
   GetGuildsDto,
@@ -81,6 +82,12 @@ export class InstitutionsController {
   //@UseGuards(AdminGuard, AuthGuard)
   createGuild(@Body() body: CreateGuildDto) {
     return this.guildService.create(body);
+  }
+
+  @Post(`${Institution.Guild}-many`)
+  //@UseGuards(AdminGuard, AuthGuard) //TODO: Remove guard-blocking comments!
+  createGuilds(@Body() body: CreateGuildsDto) {
+    return this.guildService.createMany(body);
   }
 
   @Delete(Institution.Guild)

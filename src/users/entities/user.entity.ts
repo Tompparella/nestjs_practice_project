@@ -3,23 +3,20 @@ import { Guild } from '../../institutions/entities';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   AfterInsert,
   AfterUpdate,
   AfterRemove,
+  JoinColumn,
+  OneToOne,
   ManyToOne,
   ManyToMany,
   OneToMany,
 } from 'typeorm';
+import { Profile } from './profile.entity';
+import { Base } from '../../common';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ unique: true })
-  username: string;
-
+export class User extends Base {
   @Column({ unique: true })
   email: string;
 
@@ -28,9 +25,6 @@ export class User {
 
   @Column({ default: false })
   admin: boolean;
-
-  @Column({ nullable: true })
-  imageUrl: string;
 
   @ManyToOne(() => Guild, (guild) => guild.users, {
     nullable: false,
@@ -47,16 +41,23 @@ export class User {
   @ManyToMany(() => Content, (post) => post.dislikes)
   disliked: Content[];
 
+  @OneToOne(() => Profile, (profile) => profile.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  profile: Profile;
+
   @AfterInsert()
   logInsert() {
-    console.log(`+ Created user ${this.username} with id ${this.id}`);
+    console.log(`+ Created user ${this.id}`);
   }
   @AfterUpdate()
   logUpdate() {
-    console.log(`! Updated user ${this.username} with id ${this.id}`);
+    console.log(`! Updated user ${this.id}`);
   }
   @AfterRemove()
   logRemove() {
-    console.log(`- Removed user ${this.username} with id ${this.id}`);
+    console.log(`- Removed user ${this.id}`);
   }
 }

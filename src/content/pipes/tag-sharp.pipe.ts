@@ -11,7 +11,7 @@ export class TagSharpPipe
     const originalName = parse(image.originalname).name;
     const filename = Date.now() + '-' + originalName + '.webp';
     await sharp(image.buffer)
-      .resize(200)
+      .resize(400)
       .webp({ effort: 3 })
       .toFile(join(Path.Tag, filename));
     return filename;

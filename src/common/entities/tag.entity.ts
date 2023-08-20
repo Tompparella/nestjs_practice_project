@@ -1,19 +1,16 @@
-import { Content } from './content.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToMany,
+  OneToMany,
   AfterInsert,
   AfterUpdate,
   AfterRemove,
 } from 'typeorm';
+import { Base } from './base.entity';
+import { Profiling } from './profiling.entity';
 
 @Entity()
-export class Tag {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Tag extends Base {
   @Column({ unique: true })
   name: string;
 
@@ -23,8 +20,8 @@ export class Tag {
   @Column({ nullable: true })
   imageUrl: string;
 
-  @ManyToMany(() => Content, (content) => content.tags)
-  content: Content[];
+  @OneToMany(() => Profiling, (profiling) => profiling.tag)
+  profiling: Profiling[];
 
   @AfterInsert()
   logInsert() {

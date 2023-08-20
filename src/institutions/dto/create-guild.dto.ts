@@ -5,6 +5,9 @@ export class CreateGuildDto {
   @IsString()
   name: string;
 
+  @IsString()
+  description: string;
+
   @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()
   universityId: number;

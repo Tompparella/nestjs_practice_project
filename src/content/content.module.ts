@@ -10,9 +10,10 @@ import { TagsController } from './tags.controller';
 import { ContentController } from './content.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tag, Content } from './entities';
+import { Content } from './entities';
 import { User } from '../users/entities';
 import { Guild, University } from '../institutions/entities';
+import { Tag } from '../common';
 
 @Module({
   imports: [

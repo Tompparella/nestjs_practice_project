@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Tag } from '../entities';
-import { CreateTagDto } from '../dto';
+import { Repository, In } from 'typeorm';
+import { CreateTagDto, CreateTagsDto } from '../dto';
+import { Tag } from '../../common';
 
 @Injectable()
 export class TagsService {
@@ -14,6 +14,26 @@ export class TagsService {
       throw new BadRequestException('A tag with the same name already exists');
     }
     const createdTag = this.repo.create(tag);
+    return this.repo.save(createdTag);
+  }
+
+  async createTags(tags: CreateTagsDto) {
+    const { names, descriptions } = tags;
+    const arrayLength = names.length;
+    if (arrayLength !== descriptions.length) {
+      throw new BadRequestException(
+        'Length of names and descriptions is not the same',
+      );
+    }
+    const tagExists = await this.repo.exist({ where: { name: In(names) } });
+    if (tagExists) {
+      throw new BadRequestException('A tag with the same name already exists');
+    }
+    const tagObjects = tags.names.map((name, index) => ({
+      name,
+      description: descriptions[index],
+    }));
+    const createdTag = this.repo.create(tagObjects);
     return this.repo.save(createdTag);
   }
 

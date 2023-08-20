@@ -12,7 +12,7 @@ export class ContentClipSharpPipe
     const filename = Date.now() + '-' + originalName + '.webp';
 
     await sharp(image.buffer)
-      .resize(800)
+      .resize(1200)
       .webp({ effort: 3 })
       .toFile(join(Path.Clip, filename));
 

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { University } from '../entities';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { CreateUniversitiesDto, CreateUniversityDto } from '../dto';
 
 @Injectable()
@@ -24,16 +24,28 @@ export class UniversityService {
   async createMany(
     universitiesDto: CreateUniversitiesDto,
   ): Promise<University[]> {
-    await Promise.all(
-      universitiesDto.names.map((name) => this.checkUniqueFields(name)),
-    );
-    const universities = universitiesDto.names.map((name) =>
-      this.repo.create({ name }),
-    );
+    const { names, descriptions } = universitiesDto;
+    if (names.length !== descriptions.length) {
+      throw new BadRequestException(
+        'Amount of names and descriptions is not the same',
+      );
+    }
+    await Promise.all(names.map((name) => this.checkUniqueFields(name)));
+    const universities = names.map((name, index) => {
+      const newUniversity = {
+        name,
+        description: descriptions[index],
+      };
+      return this.repo.create(newUniversity);
+    });
     return await this.repo.save(universities);
   }
-  find(): Promise<University[]> {
-    return this.repo.find();
+  find(universityIds?: number[]): Promise<University[]> {
+    if (universityIds) {
+      return this.repo.find({ where: { id: In(universityIds) } });
+    } else {
+      return this.repo.find();
+    }
   }
   findOne(id: number): Promise<University> {
     if (!id) {

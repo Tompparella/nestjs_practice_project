@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Guild } from '../entities';
 import { UniversityService } from './university.service';
+import { CreateGuildDto, CreateGuildsDto } from '../dto';
 
 @Injectable()
 export class GuildService {
@@ -18,13 +19,10 @@ export class GuildService {
     }
   }
 
-  async create(guildObject: {
-    name: string;
-    universityId: number;
-  }): Promise<Guild> {
-    const { name, universityId } = guildObject;
+  async create(guildObject: CreateGuildDto): Promise<Guild> {
+    const { name, description, universityId } = guildObject;
     await this.checkUniqueFields(name);
-    const guild = this.repo.create({ name });
+    const guild = this.repo.create({ name, description });
     const university = await this.universityService.findOne(universityId);
     if (!university) {
       throw new BadRequestException(
@@ -33,6 +31,33 @@ export class GuildService {
     }
     guild.university = university;
     return await this.repo.save(guild);
+  }
+  async createMany(guildsDto: CreateGuildsDto): Promise<Guild[]> {
+    const { names, descriptions, universityIds } = guildsDto;
+    const arrayLength = names.length;
+    if (
+      arrayLength !== descriptions.length ||
+      arrayLength !== universityIds.length
+    ) {
+      throw new BadRequestException(
+        'Amount of names, descriptions, and universityIds is not the same',
+      );
+    }
+    await Promise.all(names.map((name) => this.checkUniqueFields(name)));
+    const guildObjects = names.map((name, index) => ({
+      name,
+      description: descriptions[index],
+      university: universityIds[index],
+    }));
+    const universities = await this.universityService.find(universityIds);
+    const guilds: Guild[] = guildObjects.map((guild) => {
+      const newUniversity = {
+        ...guild,
+        university: universities.find((uni) => uni.id === guild.university),
+      };
+      return this.repo.create(newUniversity);
+    });
+    return await this.repo.save(guilds);
   }
   find(universityId: number): Promise<Guild[]> {
     return this.repo.findBy({ university: { id: universityId } });
