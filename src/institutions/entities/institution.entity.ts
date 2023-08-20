@@ -1,12 +1,9 @@
 import { Base } from '../../common';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { InstitutionProfiling } from './institution-profiling.entity';
 
 @Entity()
 export abstract class Institution extends Base {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ unique: true })
   name: string;
 

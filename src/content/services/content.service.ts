@@ -40,7 +40,7 @@ export class ContentService {
         'profiling',
         'tag',
         'creator.id',
-        'creator.profile',
+        'profile',
       ]) // TODO: Timestamp!!
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
@@ -73,7 +73,7 @@ export class ContentService {
         'profiling',
         'tag',
         'creator.id',
-        'creator.profile',
+        'profile',
       ])
       .leftJoin('content.guild', 'guild')
       .leftJoin('guild.university', 'university')
@@ -124,7 +124,7 @@ export class ContentService {
         'profiling',
         'tag',
         'creator.id',
-        'creator.profile',
+        'profile',
       ])
       .innerJoin('content.guild', 'guild', 'guild.id = :guildId', { guildId })
       .leftJoin('content.creator', 'creator')
@@ -172,7 +172,7 @@ export class ContentService {
         'profiling',
         'tag',
         'creator.id',
-        'creator.profile',
+        'profile',
       ])
       .leftJoin('content.creator', 'creator')
       .leftJoin('creator.profile', 'profile')

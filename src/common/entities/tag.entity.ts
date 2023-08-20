@@ -1,6 +1,5 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   OneToMany,
   AfterInsert,
@@ -12,9 +11,6 @@ import { Profiling } from './profiling.entity';
 
 @Entity()
 export class Tag extends Base {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ unique: true })
   name: string;
 

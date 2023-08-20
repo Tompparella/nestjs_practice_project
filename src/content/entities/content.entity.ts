@@ -1,7 +1,6 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -17,9 +16,6 @@ import { Base } from '../../common';
 
 @Entity()
 export class Content extends Base {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ unique: true })
   url: string;
 

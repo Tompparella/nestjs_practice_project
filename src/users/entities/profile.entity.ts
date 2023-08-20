@@ -1,6 +1,5 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   AfterInsert,
   AfterUpdate,
   AfterRemove,
@@ -14,9 +13,6 @@ import { Base } from '../../common';
 
 @Entity()
 export class Profile extends Base {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ unique: true })
   username: string;
 

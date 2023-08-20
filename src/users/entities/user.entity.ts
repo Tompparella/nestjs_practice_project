@@ -3,7 +3,6 @@ import { Guild } from '../../institutions/entities';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   AfterInsert,
   AfterUpdate,
   AfterRemove,
@@ -18,9 +17,6 @@ import { Base } from '../../common';
 
 @Entity()
 export class User extends Base {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column({ unique: true })
   email: string;
 
