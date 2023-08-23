@@ -26,13 +26,10 @@ export class ContentResponseDto {
 
   //  Can look into exposing guild once switching between institutions is made possible
   @Expose()
-  @Transform(({ obj }) => {
-    console.log(obj.creator);
-    return {
-      id: obj.creator.id,
-      profile: obj.creator.profile,
-    };
-  })
+  @Transform(({ obj }) => ({
+    id: obj.creator.id,
+    profile: obj.creator.profile,
+  }))
   creator: User;
 
   @Expose()
