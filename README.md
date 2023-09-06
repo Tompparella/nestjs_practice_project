@@ -56,22 +56,24 @@ sudo sh get-docker.sh
 
 sudo apt install docker-compose
 
+4. Move docker-compose file to a location which contains both the vue- and nestjs projects. Also load docker environment files with 'docker config'
+
 4. Build your Docker image:
 
 Copy code
 docker build -t nestjs-app .
 
-7. Create Nginx Configuration Files:
+5. Create Nginx Configuration Files:
 
 Create an nginx.conf file and an nginx-site.conf file in the same directory as your NestJS project with your Nginx configuration. Customize these files as needed for your specific application.
 
-9. Start application:
+6. Start application:
 
 Run the following command to start your NestJS application and Nginx reverse proxy:
 
 docker-compose up -d
 
-10. Access application:
+7. Access application:
 - You can now access the application through your server's IP address or hostname on port 80 (the default HTTP port). For example, if your server's IP address is 192.168.1.100, you can access your application by opening a web browser and navigating to http://192.168.1.100.
 
 ## Credits

@@ -1,7 +1,7 @@
 
 FROM node:14
 
-WORKDIR /src
+WORKDIR /backend
 
 # Copy package.json and package-lock.json to the container
 COPY package*.json ./

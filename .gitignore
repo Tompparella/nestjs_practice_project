@@ -43,3 +43,6 @@ development
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Docker
+docker-compose.yml
