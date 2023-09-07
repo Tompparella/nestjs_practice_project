@@ -87,3 +87,4 @@ docker-compose up -d
 DB_NAME=<Build environment>
 COOKIE_KEY=<Secret cookie key>
 CLIENT_URL=<Client server url>
+PORT=<Port where the server will be served>
