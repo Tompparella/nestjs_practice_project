@@ -46,3 +46,6 @@ development
 
 # Docker
 docker-compose.yml
+
+# Hidden
+_*

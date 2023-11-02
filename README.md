@@ -40,6 +40,10 @@ $ npm run test:cov
 
 ## Deployment
 
+NOTE!
+Sharp package might require additional configuration depending on server
+processor architecture: https://sharp.pixelplumbing.com/install#cross-platform
+
 1. Prepare your server:
 
 Make sure your server is up-to-date by running:
