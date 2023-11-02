@@ -32,7 +32,6 @@
     "cookie-session": "^2.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "sharp": "^0.32.1",
     "sqlite3": "^5.1.4"
   },
   "devDependencies": {
@@ -58,7 +57,8 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.1.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "sharp": "^0.32.1"
   },
   "jest": {
     "moduleFileExtensions": [
